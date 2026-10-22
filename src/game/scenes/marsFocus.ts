@@ -42,15 +42,15 @@ export function createHighFidelityMarsTexture(size = 1024): THREE.CanvasTexture 
         // Dark volcanic basalt regions (Syrtis Major, Acidalia Planitia, Sinus Meridiani)
         if (n < 0.44) {
           const darkFactor = 0.55 + n * 0.9;
-          d[idx] = Math.floor(d[idx] * darkFactor * 0.85);
-          d[idx + 1] = Math.floor(d[idx + 1] * darkFactor * 0.65);
-          d[idx + 2] = Math.floor(d[idx + 2] * darkFactor * 0.65);
+          d[idx] = Math.floor((d[idx] ?? 0) * darkFactor * 0.85);
+          d[idx + 1] = Math.floor((d[idx + 1] ?? 0) * darkFactor * 0.65);
+          d[idx + 2] = Math.floor((d[idx + 2] ?? 0) * darkFactor * 0.65);
         } else if (n > 0.62) {
           // Bright ochre highlands & dust plains
           const bright = (n - 0.62) * 80;
-          d[idx] = Math.min(255, d[idx] + bright);
-          d[idx + 1] = Math.min(255, d[idx + 1] + bright * 0.7);
-          d[idx + 2] = Math.min(255, d[idx + 2] + bright * 0.3);
+          d[idx] = Math.min(255, (d[idx] ?? 0) + bright);
+          d[idx + 1] = Math.min(255, (d[idx + 1] ?? 0) + bright * 0.7);
+          d[idx + 2] = Math.min(255, (d[idx + 2] ?? 0) + bright * 0.3);
         }
       }
     }
@@ -396,7 +396,7 @@ export class MarsScene implements Scene {
     // 1. Phobos (Irregular Rocky Asteroid Moon)
     const phobosGeo = new THREE.DodecahedronGeometry(0.36, 1);
     // Deform vertices for irregular asteroid shape
-    const pPos = phobosGeo.attributes.position;
+    const pPos = phobosGeo.attributes['position'] as THREE.BufferAttribute;
     for (let i = 0; i < pPos.count; i++) {
       const vx = pPos.getX(i);
       const vy = pPos.getY(i);

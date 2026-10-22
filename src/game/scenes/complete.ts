@@ -87,9 +87,11 @@ export class CompleteScene implements Scene {
     }
 
     // cloth wave
-    const posAttr = (this.cloth.geometry as THREE.PlaneGeometry).attributes.position;
+    const posAttr = (this.cloth.geometry as THREE.PlaneGeometry).attributes[
+      'position'
+    ] as THREE.BufferAttribute;
     for (let i = 0; i < posAttr.count; i++) {
-      const x = this.clothBase[i * 3];
+      const x = this.clothBase[i * 3] ?? 0;
       const wave = Math.sin(x * 4 + t * 3.2) * 0.08 * (x + 0.75);
       posAttr.setZ(i, wave);
     }

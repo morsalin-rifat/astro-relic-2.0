@@ -60,7 +60,7 @@ export class MarsWorldScene implements Scene {
     // terrain
     const geo = new THREE.PlaneGeometry(WORLD, WORLD, 180, 180);
     geo.rotateX(-Math.PI / 2);
-    const pos = geo.attributes.position;
+    const pos = geo.attributes['position'] as THREE.BufferAttribute;
     const colors = new Float32Array(pos.count * 3);
     const base = new THREE.Color(0x773a20);
     const light = new THREE.Color(0xa85c38);
@@ -332,7 +332,7 @@ export class MarsWorldScene implements Scene {
     this.player.position.y = this.groundHeight(this.player.position.x, this.player.position.z);
 
     // walk animation
-    const limbs = this.player.userData.limbs;
+    const limbs = this.player.userData['limbs'];
     if (limbs) {
       const speedK = Math.min(this.velocity.length() / 6.5, 1);
       const sw = Math.sin(t * 9) * 0.55 * speedK;

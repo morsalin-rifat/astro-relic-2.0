@@ -166,7 +166,7 @@ export class SolarScene implements Scene {
           blending: THREE.AdditiveBlending,
         })
       );
-      sprite.position.set(pos[0], pos[1], pos[2]);
+      sprite.position.set(pos[0] ?? 0, pos[1] ?? 0, pos[2] ?? 0);
       sprite.scale.set(s, s, 1);
       this.scene.add(sprite);
     });
@@ -489,7 +489,7 @@ export class SolarScene implements Scene {
         orbitRadius: b.orbitRadius3d,
         speed: b.orbitSpeed,
         angle,
-        label,
+        ...(label ? { label } : {}),
         group,
         orbitLine: orbitRing,
         clouds: cloudsMesh,
@@ -718,7 +718,7 @@ export class SolarScene implements Scene {
       return;
     }
 
-    let obj: THREE.Object3D | null = hits[0].object;
+    let obj: THREE.Object3D | null = hits[0]!.object;
     let name = '';
     while (obj) {
       if (obj.name === 'Mars' || obj.name === 'Moon') {
@@ -821,7 +821,7 @@ export class SolarScene implements Scene {
         const worldPos = new THREE.Vector3();
         mars.mesh.getWorldPosition(worldPos);
         this.marsTargetRing.position.copy(worldPos);
-        this.marsTargetRing.children[0].rotation.z = t * 0.8;
+        this.marsTargetRing.children[0]!.rotation.z = t * 0.8;
         this.cameraTargetPos.copy(worldPos);
 
         if (this.explorer.visible) {
@@ -836,7 +836,7 @@ export class SolarScene implements Scene {
         const worldPos = new THREE.Vector3();
         moonObj.getWorldPosition(worldPos);
         this.moonTargetRing.position.copy(worldPos);
-        this.moonTargetRing.children[0].rotation.z = t * 0.8;
+        this.moonTargetRing.children[0]!.rotation.z = t * 0.8;
         this.cameraTargetPos.copy(worldPos);
       }
     }

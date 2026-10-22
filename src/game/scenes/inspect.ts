@@ -89,10 +89,13 @@ export class InspectScene implements Scene {
     this.raycaster.setFromCamera(new THREE.Vector2(x, y), this.camera);
     const hits = this.raycaster.intersectObjects(this.markers.map((m) => m.mesh), true);
     if (hits.length === 0) return;
-    let obj: THREE.Object3D | null = hits[0].object;
+    const hit = hits[0];
+    if (!hit) return;
+    let obj: THREE.Object3D | null = hit.object;
     while (obj && !obj.name.startsWith('hotspot:')) obj = obj.parent;
     if (!obj) return;
     const id = obj.name.split(':')[1];
+    if (!id) return;
     const visited = store.get().visitedHotspots;
     store.set({
       activeHotspot: id,
