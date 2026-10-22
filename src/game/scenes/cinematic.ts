@@ -221,8 +221,9 @@ export class MarsCinematicScene implements Scene {
     const T = this.time;
 
     // Mission Milestone Captions
-    if (this.beatIdx < CINEMATIC_BEATS.length && T >= CINEMATIC_BEATS[this.beatIdx].at) {
-      store.set({ caption: CINEMATIC_BEATS[this.beatIdx] });
+    const beat = CINEMATIC_BEATS[this.beatIdx];
+    if (beat && T >= beat.at) {
+      store.set({ caption: beat });
       this.beatIdx++;
       setTimeout(() => store.set({ caption: null }), 2600);
     }

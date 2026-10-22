@@ -33,7 +33,7 @@ export class CompleteScene implements Scene {
 
     const geo = new THREE.CircleGeometry(70, 80);
     geo.rotateX(-Math.PI / 2);
-    const pos = geo.attributes.position;
+    const pos = geo.attributes['position'] as THREE.BufferAttribute;
     for (let i = 0; i < pos.count; i++) {
       pos.setY(i, fbm(pos.getX(i) * 0.03, pos.getZ(i) * 0.03, 3) * 1.8);
     }
@@ -60,7 +60,7 @@ export class CompleteScene implements Scene {
     this.flagGroup = flag.group;
     this.cloth = flag.cloth;
     this.cloth.position.set(0.78, this.flagY, 0);
-    this.clothBase = (this.cloth.geometry as THREE.PlaneGeometry).attributes.position.array.slice() as Float32Array;
+    this.clothBase = ((this.cloth.geometry as THREE.PlaneGeometry).attributes['position'] as THREE.BufferAttribute).array.slice() as Float32Array;
     this.flagGroup.position.set(1.4, 0, -1);
     this.scene.add(this.flagGroup);
 
