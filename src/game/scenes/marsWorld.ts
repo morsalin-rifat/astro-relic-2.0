@@ -1,0 +1,409 @@
+import * as THREE from 'three';
+import { store } from '../../state/store';
+import { audio } from '../audio';
+import { makeStarfield, fbm, type Scene } from '../utils';
+import { buildExplorer, buildNova, buildSojourner } from '../models/builders';
+import { NOVA_WELCOME_MARS, NOVA_NEAR_SITE, SOJOURNER_WAKE, UI } from '../../data/content';
+
+const SITE = new THREE.Vector3(42, 0, -30);
+const WORLD = 320;
+
+export class MarsWorldScene implements Scene {
+  private renderer: THREE.WebGLRenderer;
+  private scene = new THREE.Scene();
+  private camera: THREE.PerspectiveCamera;
+  private player: THREE.Group;
+  private nova = buildNova();
+  private rover: THREE.Group;
+  private beacon: THREE.Group;
+  private sun: THREE.DirectionalLight;
+  private stars = makeStarfield(3000, 600);
+  private keys = new Set<string>();
+  private joy = { x: 0, y: 0 };
+  private camYaw = 0.6;
+  private camPitch = 0.32;
+  private camDist = 7;
+  private dragging = false;
+  private lastPointer = { x: 0, y: 0 };
+  private velocity = new THREE.Vector3();
+  private nearSiteSaid = false;
+  private meeting = false;
+  private disposers: (() => void)[] = [];
+  private metAtStart: boolean;
+
+  constructor(renderer: THREE.WebGLRenderer) {
+    this.renderer = renderer;
+    this.metAtStart = store.get().metSojourner;
+    this.camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 1500);
+    this.scene.background = new THREE.Color(0x140806);
+    this.scene.fog = new THREE.Fog(0x241009, 50, 260);
+    this.scene.add(this.stars);
+
+    // lighting: low warm sun
+    this.sun = new THREE.DirectionalLight(0xffc9a0, 2.6);
+    this.sun.position.set(60, 40, -30);
+    this.sun.castShadow = true;
+    this.sun.shadow.mapSize.set(2048, 2048);
+    this.sun.shadow.camera.near = 1;
+    this.sun.shadow.camera.far = 220;
+    this.sun.shadow.camera.left = -45;
+    this.sun.shadow.camera.right = 45;
+    this.sun.shadow.camera.top = 45;
+    this.sun.shadow.camera.bottom = -45;
+    this.sun.shadow.bias = -0.0004;
+    this.scene.add(this.sun);
+    this.scene.add(new THREE.AmbientLight(0x4a2418, 0.85));
+    const rim = new THREE.DirectionalLight(0x6f86b8, 0.5);
+    rim.position.set(-40, 20, 40);
+    this.scene.add(rim);
+
+    // terrain
+    const geo = new THREE.PlaneGeometry(WORLD, WORLD, 180, 180);
+    geo.rotateX(-Math.PI / 2);
+    const pos = geo.attributes.position;
+    const colors = new Float32Array(pos.count * 3);
+    const base = new THREE.Color(0x773a20);
+    const light = new THREE.Color(0xa85c38);
+    const dark = new THREE.Color(0x502413);
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i);
+      const z = pos.getZ(i);
+      const y = this.groundHeight(x, z);
+      pos.setY(i, y);
+      const c = base.clone().lerp(light, fbm(x * 0.05, z * 0.05));
+      c.lerp(dark, Math.max(0, -y) * 0.15);
+      colors[i * 3] = c.r;
+      colors[i * 3 + 1] = c.g;
+      colors[i * 3 + 2] = c.b;
+    }
+    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geo.computeVertexNormals();
+    const terrain = new THREE.Mesh(
+      geo,
+      new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, metalness: 0 })
+    );
+    terrain.receiveShadow = true;
+    this.scene.add(terrain);
+
+    // rocks
+    const rockGeo = new THREE.DodecahedronGeometry(1, 0);
+    const rockMat = new THREE.MeshStandardMaterial({ color: 0x7a4a30, roughness: 0.95 });
+    const rocks = new THREE.InstancedMesh(rockGeo, rockMat, 260);
+    const dummy = new THREE.Object3D();
+    for (let i = 0; i < 260; i++) {
+      const x = (Math.random() - 0.5) * (WORLD - 30);
+      const z = (Math.random() - 0.5) * (WORLD - 30);
+      const s = 0.2 + Math.pow(Math.random(), 2.4) * 2.2;
+      dummy.position.set(x, this.groundHeight(x, z) + s * 0.25, z);
+      dummy.rotation.set(Math.random() * 3, Math.random() * 3, Math.random() * 3);
+      dummy.scale.setScalar(s);
+      dummy.updateMatrix();
+      rocks.setMatrixAt(i, dummy.matrix);
+    }
+    rocks.castShadow = true;
+    rocks.receiveShadow = true;
+    this.scene.add(rocks);
+
+    // Pathfinder lander at site
+    const lander = this.buildLander();
+    lander.position.set(SITE.x, this.groundHeight(SITE.x, SITE.z), SITE.z);
+    lander.rotation.y = 0.7;
+    this.scene.add(lander);
+
+    // Sojourner rover near lander
+    const roverBuilt = buildSojourner();
+    this.rover = roverBuilt.group;
+    const rx = SITE.x + 3.4;
+    const rz = SITE.z + 2.4;
+    this.rover.position.set(rx, this.groundHeight(rx, rz), rz);
+    this.rover.rotation.y = -0.9;
+    this.rover.traverse((o) => {
+      o.castShadow = true;
+    });
+    this.scene.add(this.rover);
+
+    // beacon
+    this.beacon = new THREE.Group();
+    const beam = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.25, 0.6, 30, 12, 1, true),
+      new THREE.MeshBasicMaterial({
+        color: 0xffd97d,
+        transparent: true,
+        opacity: 0.18,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+      })
+    );
+    beam.position.y = 15;
+    this.beacon.add(beam);
+    const ringGeo = new THREE.RingGeometry(1.2, 1.6, 40);
+    const ring = new THREE.Mesh(
+      ringGeo,
+      new THREE.MeshBasicMaterial({ color: 0xffd97d, transparent: true, opacity: 0.7, side: THREE.DoubleSide })
+    );
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.y = 0.15;
+    ring.name = 'beaconRing';
+    this.beacon.add(ring);
+    this.beacon.position.set(SITE.x + 1, this.groundHeight(SITE.x + 1, SITE.z + 1), SITE.z + 1);
+    this.scene.add(this.beacon);
+    const beaconLight = new THREE.PointLight(0xffd97d, 12, 25);
+    beaconLight.position.y = 3;
+    this.beacon.add(beaconLight);
+
+    // player
+    this.player = buildExplorer();
+    const startPos = this.metAtStart
+      ? new THREE.Vector3(SITE.x + 7, 0, SITE.z + 7)
+      : new THREE.Vector3(0, 0, 0);
+    this.player.position.set(startPos.x, this.groundHeight(startPos.x, startPos.z), startPos.z);
+    this.scene.add(this.player);
+
+    // Nova follows the player
+    this.nova.group.position.copy(this.player.position).add(new THREE.Vector3(1.4, 2.4, 1));
+    this.scene.add(this.nova.group);
+
+    audio.play('mars');
+    store.set({ hint: UI.moveHint });
+    (window as any).__marsDebug = () => ({
+      p: this.player.position.toArray().map((n: number) => n.toFixed(1)),
+      distBeacon: this.player.position.distanceTo(this.beacon.position).toFixed(1),
+      distRover: this.player.position.distanceTo(this.rover.position).toFixed(1),
+      said: this.nearSiteSaid,
+      meeting: this.meeting,
+      yaw: this.camYaw.toFixed(2),
+    });
+    (window as any).__marsTeleport = (x: number, z: number) => {
+      this.player.position.set(x, this.groundHeight(x, z), z);
+    };
+
+    this.disposers.push(
+      store.on('joystick', (d) => {
+        const v = d as { x: number; y: number };
+        this.joy = v;
+      })
+    );
+
+    // welcome dialogue
+    setTimeout(() => {
+      if (this.metAtStart) {
+        this.startMeeting(true);
+      } else {
+        store.say(NOVA_WELCOME_MARS);
+        store.set({ objective: UI.objectiveExplore });
+      }
+    }, 900);
+  }
+
+  private groundHeight(x: number, z: number): number {
+    let h = fbm(x * 0.012 + 7, z * 0.012 + 3, 4) * 7 - 3.5;
+    // craters
+    const craters: [number, number, number][] = [
+      [-40, 30, 16],
+      [20, 55, 11],
+      [-15, -60, 13],
+      [70, 20, 9],
+      [-70, -25, 18],
+    ];
+    for (const [cx, cz, r] of craters) {
+      const d = Math.hypot(x - cx, z - cz);
+      if (d < r) {
+        const k = d / r;
+        h -= Math.cos(k * Math.PI * 0.5) * r * 0.12;
+      } else if (d < r * 1.25) {
+        h += (1 - (d - r) / (r * 0.25)) * r * 0.05; // rim
+      }
+    }
+    // flatten near site and start
+    for (const [fx, fz, fr] of [
+      [SITE.x, SITE.z, 14],
+      [0, 0, 10],
+    ] as const) {
+      const d = Math.hypot(x - fx, z - fz);
+      if (d < fr) h *= d / fr;
+    }
+    return h;
+  }
+
+  private buildLander(): THREE.Group {
+    const g = new THREE.Group();
+    const mat = new THREE.MeshStandardMaterial({ color: 0xcfc9ba, roughness: 0.55, metalness: 0.35 });
+    const goldMat = new THREE.MeshStandardMaterial({ color: 0xd8a545, roughness: 0.4, metalness: 0.7 });
+    // tetrahedral body
+    const body = new THREE.Mesh(new THREE.ConeGeometry(1.7, 1.4, 4), goldMat);
+    body.position.y = 0.9;
+    body.rotation.y = Math.PI / 4;
+    g.add(body);
+    // petals (open)
+    for (let i = 0; i < 3; i++) {
+      const petal = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.06, 1.1), mat);
+      const a = (i / 3) * Math.PI * 2;
+      petal.position.set(Math.cos(a) * 1.5, 0.35, Math.sin(a) * 1.5);
+      petal.rotation.set(0, -a, 0.5);
+      g.add(petal);
+    }
+    // mast + camera
+    const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.4, 8), mat);
+    mast.position.y = 2.1;
+    g.add(mast);
+    const cam = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.18, 0.18), mat);
+    cam.position.y = 2.8;
+    g.add(cam);
+    // dish
+    const dish = new THREE.Mesh(new THREE.ConeGeometry(0.5, 0.3, 16, 1, true), mat);
+    dish.position.set(-0.8, 1.9, 0.4);
+    dish.rotation.z = 0.9;
+    g.add(dish);
+    g.traverse((o) => {
+      o.castShadow = true;
+    });
+    return g;
+  }
+
+  private startMeeting(skipCamera = false) {
+    if (this.meeting) return;
+    this.meeting = true;
+    store.set({ objective: null, hint: null });
+    const storyDone = store.get().storyDone;
+    store.set({ metSojourner: true });
+    store.say(SOJOURNER_WAKE, [
+      storyDone
+        ? { en: UI.inspectBtn.en, bn: UI.inspectBtn.bn, action: 'openInspect' }
+        : { en: UI.hearStory.en, bn: UI.hearStory.bn, action: 'hearStory' },
+    ]);
+    if (!skipCamera) {
+      // gently pull camera toward the rover
+      this.camDist = 5;
+    }
+  }
+
+  onPointerDown(x: number, y: number) {
+    this.dragging = true;
+    this.lastPointer = { x, y };
+  }
+
+  onPointerMove(x: number, y: number) {
+    if (!this.dragging) return;
+    this.camYaw -= (x - this.lastPointer.x) * 2.4;
+    this.camPitch = THREE.MathUtils.clamp(this.camPitch + (y - this.lastPointer.y) * 1.6, 0.05, 1.1);
+    this.lastPointer = { x, y };
+  }
+
+  onPointerUp() {
+    this.dragging = false;
+  }
+
+  onWheel(d: number) {
+    this.camDist = THREE.MathUtils.clamp(this.camDist + d * 0.01, 3.5, 14);
+  }
+
+  onKey(code: string, down: boolean) {
+    if (down) this.keys.add(code);
+    else this.keys.delete(code);
+  }
+
+  resize(w: number, h: number) {
+    this.camera.aspect = w / h;
+    this.camera.updateProjectionMatrix();
+  }
+
+  update(dt: number, t: number) {
+    // movement input
+    const input = new THREE.Vector2(
+      (this.keys.has('KeyD') || this.keys.has('ArrowRight') ? 1 : 0) - (this.keys.has('KeyA') || this.keys.has('ArrowLeft') ? 1 : 0) + this.joy.x,
+      (this.keys.has('KeyW') || this.keys.has('ArrowUp') ? 1 : 0) - (this.keys.has('KeyS') || this.keys.has('ArrowDown') ? 1 : 0) + this.joy.y
+    );
+    const moving = !this.meeting && input.lengthSq() > 0.001;
+    if (moving) {
+      input.normalize();
+      const speed = 6.5;
+      const sin = Math.sin(this.camYaw);
+      const cos = Math.cos(this.camYaw);
+      const dir = new THREE.Vector3(input.x * cos - input.y * sin, 0, -input.y * cos - input.x * sin);
+      this.velocity.lerp(dir.multiplyScalar(speed), dt * 8);
+      this.player.rotation.y = Math.atan2(this.velocity.x, this.velocity.z);
+    } else {
+      this.velocity.lerp(new THREE.Vector3(), dt * 10);
+    }
+    this.player.position.addScaledVector(this.velocity, dt);
+    // world bounds
+    this.player.position.x = THREE.MathUtils.clamp(this.player.position.x, -WORLD / 2 + 10, WORLD / 2 - 10);
+    this.player.position.z = THREE.MathUtils.clamp(this.player.position.z, -WORLD / 2 + 10, WORLD / 2 - 10);
+    this.player.position.y = this.groundHeight(this.player.position.x, this.player.position.z);
+
+    // walk animation
+    const limbs = this.player.userData.limbs;
+    if (limbs) {
+      const speedK = Math.min(this.velocity.length() / 6.5, 1);
+      const sw = Math.sin(t * 9) * 0.55 * speedK;
+      limbs.legL.rotation.x = sw;
+      limbs.legR.rotation.x = -sw;
+      limbs.armL.rotation.x = -sw * 0.7;
+      limbs.armR.rotation.x = sw * 0.7;
+      this.player.position.y += Math.abs(Math.sin(t * 9)) * 0.05 * speedK;
+    }
+
+    // Nova hover-follow
+    this.nova.update(dt, t);
+    const novaTarget = this.player.position.clone().add(new THREE.Vector3(Math.sin(t * 0.4) * 1.6, 2.3 + Math.sin(t * 1.5) * 0.18, Math.cos(t * 0.4) * 1.6));
+    this.nova.group.position.lerp(novaTarget, dt * 2.2);
+    this.nova.group.lookAt(this.meeting ? this.rover.position : this.player.position);
+
+    // beacon pulse
+    const ring = this.beacon.getObjectByName('beaconRing') as THREE.Mesh;
+    if (ring) {
+      const k = 1 + Math.sin(t * 2.4) * 0.25;
+      ring.scale.set(k, k, 1);
+      (ring.material as THREE.MeshBasicMaterial).opacity = 0.45 + Math.sin(t * 2.4) * 0.25;
+    }
+
+    // triggers
+    if (!this.meeting) {
+      const distSite = this.player.position.distanceTo(this.beacon.position);
+      if (!this.nearSiteSaid && distSite < 26) {
+        this.nearSiteSaid = true;
+        store.say(NOVA_NEAR_SITE);
+        store.set({ objective: UI.walkToRover });
+      }
+      if (this.player.position.distanceTo(this.rover.position) < 4.2) {
+        this.startMeeting();
+      }
+    } else {
+      // slow orbit toward rover while meeting
+      const toRover = this.rover.position.clone().sub(this.player.position);
+      this.camYaw = THREE.MathUtils.lerp(this.camYaw, Math.atan2(-toRover.x, -toRover.z) + Math.PI, dt * 1.5);
+    }
+
+    // third-person camera
+    const target = this.player.position.clone().add(new THREE.Vector3(0, 1.4, 0));
+    const camOffset = new THREE.Vector3(
+      Math.sin(this.camYaw) * Math.cos(this.camPitch),
+      Math.sin(this.camPitch),
+      Math.cos(this.camYaw) * Math.cos(this.camPitch)
+    ).multiplyScalar(this.camDist);
+    const camPos = target.clone().add(camOffset);
+    camPos.y = Math.max(camPos.y, this.groundHeight(camPos.x, camPos.z) + 0.6);
+    this.camera.position.lerp(camPos, dt * 5);
+    this.camera.lookAt(target);
+
+    // sun follows player for tight shadows
+    this.sun.position.set(this.player.position.x + 60, 40, this.player.position.z - 30);
+    this.sun.target.position.copy(this.player.position);
+    this.sun.target.updateMatrixWorld();
+
+    this.stars.rotation.y += dt * 0.002;
+    this.renderer.render(this.scene, this.camera);
+  }
+
+  dispose() {
+    store.set({ objective: null, hint: null });
+    this.disposers.forEach((d) => d());
+    this.scene.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (m.geometry) m.geometry.dispose();
+      const mat = (m as any).material;
+      if (Array.isArray(mat)) mat.forEach((x) => x.dispose());
+      else mat?.dispose?.();
+    });
+  }
+}
