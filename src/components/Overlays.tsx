@@ -102,6 +102,7 @@ function HomeUI() {
       return () => clearTimeout(id);
     }
     setShow(false);
+    return undefined;
   }, [phase]);
   if (phase !== 'home') return null;
   return (
@@ -197,12 +198,12 @@ function StoryOverlay() {
     if (active) {
       setChapter(0);
       setLine(-1);
-      store.emit('story:chapter', STORY[0].camera);
+      store.emit('story:chapter', STORY[0]?.camera);
     }
   }, [active]);
 
   if (!active) return null;
-  const ch = STORY[chapter];
+  const ch = STORY[chapter]!;
   const isLast = chapter === STORY.length - 1 && line === ch.lines.length - 1;
 
   const advance = () => {
@@ -218,7 +219,7 @@ function StoryOverlay() {
       const next = chapter + 1;
       setChapter(next);
       setLine(-1);
-      store.emit('story:chapter', STORY[next].camera);
+      store.emit('story:chapter', STORY[next]!.camera);
       return;
     }
     store.emit('storyFinished');
@@ -249,7 +250,7 @@ function StoryOverlay() {
             className="max-w-[680px] text-center text-[clamp(0.95rem,2vw,1.2rem)] leading-8 text-[#ece7db] animate-[fadein_0.8s_ease]"
             style={{ textShadow: '0 2px 16px rgba(0,0,0,0.9)' }}
           >
-            {lang === 'bn' ? ch.lines[line].bn : ch.lines[line].en}
+            {lang === 'bn' ? ch.lines[line]!.bn : ch.lines[line]!.en}
           </div>
         </div>
       )}
