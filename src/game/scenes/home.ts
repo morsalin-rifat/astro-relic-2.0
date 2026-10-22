@@ -168,7 +168,7 @@ export class HomeScene implements Scene {
 
   dispose() {
     this.disposables.forEach((d) => d.dispose());
-    this.scene.traverse((o) => {
+    this.scene.traverse((o: THREE.Object3D) => {
       const m = o as THREE.Mesh;
       if (m.geometry) m.geometry.dispose();
       const mat = (m as any).material;

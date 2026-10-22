@@ -49,7 +49,7 @@ export class CompleteScene implements Scene {
     rover.scale.setScalar(2.2);
     rover.position.set(-2.2, 0, 1.2);
     rover.rotation.y = 0.7;
-    rover.traverse((o) => (o.castShadow = true));
+    rover.traverse((o: THREE.Object3D) => (o.castShadow = true));
     this.scene.add(rover);
 
     const nova = buildNova();
@@ -119,7 +119,7 @@ export class CompleteScene implements Scene {
   }
 
   dispose() {
-    this.scene.traverse((o) => {
+    this.scene.traverse((o: THREE.Object3D) => {
       const m = o as THREE.Mesh;
       if (m.geometry) m.geometry.dispose();
       const mat = (m as any).material;

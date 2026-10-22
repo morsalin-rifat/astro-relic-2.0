@@ -16,14 +16,14 @@ export function buildSojourner(): { group: THREE.Group; parts: Record<string, TH
   body.position.y = 0.42;
   body.castShadow = true;
   g.add(body);
-  parts.body = body;
+  parts['body'] = body;
 
   // solar panel top
   const panel = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.02, 0.44), panelMat);
   panel.position.y = 0.52;
   panel.castShadow = true;
   g.add(panel);
-  parts.power = panel;
+  parts['power'] = panel;
   // panel grid lines
   const gridMat = new THREE.MeshBasicMaterial({ color: 0x2a4f92 });
   for (let i = -2; i <= 2; i++) {
@@ -55,7 +55,7 @@ export function buildSojourner(): { group: THREE.Group; parts: Record<string, TH
     wheelGroup.add(arm);
   });
   g.add(wheelGroup);
-  parts.wheels = wheelGroup;
+  parts['wheels'] = wheelGroup;
 
   // mast + camera head (front)
   const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.42, 8), darkMat);
@@ -76,7 +76,7 @@ export function buildSojourner(): { group: THREE.Group; parts: Record<string, TH
   });
   head.position.set(0, 0.94, 0.18);
   g.add(head);
-  parts.cameras = head;
+  parts['cameras'] = head;
 
   // rear color camera
   const rearCam = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.05, 0.04), darkMat);
@@ -91,7 +91,7 @@ export function buildSojourner(): { group: THREE.Group; parts: Record<string, TH
   const lg = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.02, 0.08, 12), bodyMat);
   lg.position.set(-0.24, 0.55, 0.16);
   g.add(lg);
-  parts.comms = whip;
+  parts['comms'] = whip;
 
   // APXS deployment arm (small cylinder front-right)
   const apxs = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.1, 8), darkMat);
@@ -161,7 +161,7 @@ export function buildExplorer(): THREE.Group {
   tip.position.set(0.1, 1.53, 0);
   g.add(tip);
 
-  g.userData.limbs = { legL, legR, armL, armR };
+  g.userData['limbs'] = { legL, legR, armL, armR };
   return g;
 }
 

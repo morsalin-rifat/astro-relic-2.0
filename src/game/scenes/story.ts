@@ -57,7 +57,7 @@ export class StoryScene implements Scene {
     const built = buildSojourner();
     this.rover = built.group;
     this.rover.scale.setScalar(2.2);
-    this.rover.traverse((o) => {
+    this.rover.traverse((o: THREE.Object3D) => {
       o.castShadow = true;
     });
     this.scene.add(this.rover);
@@ -118,7 +118,7 @@ export class StoryScene implements Scene {
   dispose() {
     this.disposer();
     store.set({ showStory: false });
-    this.scene.traverse((o) => {
+    this.scene.traverse((o: THREE.Object3D) => {
       const m = o as THREE.Mesh;
       if (m.geometry) m.geometry.dispose();
       const mat = (m as any).material;

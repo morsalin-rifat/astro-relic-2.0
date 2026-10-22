@@ -117,7 +117,7 @@ export class MarsWorldScene implements Scene {
     const rz = SITE.z + 2.4;
     this.rover.position.set(rx, this.groundHeight(rx, rz), rz);
     this.rover.rotation.y = -0.9;
-    this.rover.traverse((o) => {
+    this.rover.traverse((o: THREE.Object3D) => {
       o.castShadow = true;
     });
     this.scene.add(this.rover);
@@ -254,7 +254,7 @@ export class MarsWorldScene implements Scene {
     dish.position.set(-0.8, 1.9, 0.4);
     dish.rotation.z = 0.9;
     g.add(dish);
-    g.traverse((o) => {
+    g.traverse((o: THREE.Object3D) => {
       o.castShadow = true;
     });
     return g;
@@ -398,7 +398,7 @@ export class MarsWorldScene implements Scene {
   dispose() {
     store.set({ objective: null, hint: null });
     this.disposers.forEach((d) => d());
-    this.scene.traverse((o) => {
+    this.scene.traverse((o: THREE.Object3D) => {
       const m = o as THREE.Mesh;
       if (m.geometry) m.geometry.dispose();
       const mat = (m as any).material;

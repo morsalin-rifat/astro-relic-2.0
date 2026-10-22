@@ -43,7 +43,7 @@ export class InspectScene implements Scene {
     const built = buildSojourner();
     const rover = built.group;
     rover.scale.setScalar(2.4);
-    rover.traverse((o) => {
+    rover.traverse((o: THREE.Object3D) => {
       o.castShadow = true;
     });
     this.scene.add(rover);
@@ -130,7 +130,7 @@ export class InspectScene implements Scene {
   dispose() {
     store.set({ hint: null, activeHotspot: null });
     this.controls.dispose();
-    this.scene.traverse((o) => {
+    this.scene.traverse((o: THREE.Object3D) => {
       const m = o as THREE.Mesh;
       if (m.geometry) m.geometry.dispose();
       const mat = (m as any).material;

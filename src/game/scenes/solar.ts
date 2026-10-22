@@ -640,7 +640,7 @@ export class SolarScene implements Scene {
       const earth = this.planets.find((p) => p.id === 'Earth');
       if (!earth) return;
 
-      const moon = earth.mesh.children.find((c) => c.name === 'Moon');
+      const moon = earth.mesh.children.find((c: THREE.Object3D) => c.name === 'Moon');
       if (!moon) return;
 
       this.isFocusing = true;
@@ -703,7 +703,7 @@ export class SolarScene implements Scene {
     // In ASTRO RELIC game design: Only MARS and MOON are primary destination click targets!
     const mars = this.planets.find((p) => p.id === 'Mars');
     const earth = this.planets.find((p) => p.id === 'Earth');
-    const moon = earth?.mesh.children.find((c) => c.name === 'Moon') as THREE.Mesh | undefined;
+    const moon = earth?.mesh.children.find((c: THREE.Object3D) => c.name === 'Moon') as THREE.Mesh | undefined;
 
     const clickableTargets: THREE.Object3D[] = [];
     if (mars) clickableTargets.push(mars.mesh);
@@ -793,7 +793,7 @@ export class SolarScene implements Scene {
     // 3. Moon orbits Earth
     const earth = this.planets.find((p) => p.id === 'Earth');
     if (earth) {
-      const moon = earth.mesh.children.find((c) => c.name === 'Moon');
+      const moon = earth.mesh.children.find((c: THREE.Object3D) => c.name === 'Moon');
       if (moon) {
         moon.position.set(Math.cos(t * 0.8 * speedMult) * 2.5, 0, Math.sin(t * 0.8 * speedMult) * 2.5);
       }
@@ -831,7 +831,7 @@ export class SolarScene implements Scene {
       }
     } else if (this.currentTargetPlanet === 'Moon') {
       const earthObj = this.planets.find((p) => p.id === 'Earth');
-      const moonObj = earthObj?.mesh.children.find((c) => c.name === 'Moon');
+      const moonObj = earthObj?.mesh.children.find((c: THREE.Object3D) => c.name === 'Moon');
       if (moonObj) {
         const worldPos = new THREE.Vector3();
         moonObj.getWorldPosition(worldPos);
@@ -862,7 +862,7 @@ export class SolarScene implements Scene {
     this.timers.forEach(clearTimeout);
     this.disposers.forEach((d) => d());
     this.controls.dispose();
-    this.scene.traverse((o) => {
+    this.scene.traverse((o: THREE.Object3D) => {
       const m = o as THREE.Mesh;
       if (m.geometry) m.geometry.dispose();
       const mat = (m as any).material;

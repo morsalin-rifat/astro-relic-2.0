@@ -606,7 +606,7 @@ export class MarsScene implements Scene {
     this.timers.forEach(clearTimeout);
     this.disposers.forEach((d) => d());
     this.controls.dispose();
-    this.scene.traverse((o) => {
+    this.scene.traverse((o: THREE.Object3D) => {
       const m = o as THREE.Mesh;
       if (m.geometry) m.geometry.dispose();
       const mat = (m as any).material;
