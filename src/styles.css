@@ -142,3 +142,49 @@
     color: var(--color-foreground);
   }
 }
+
+/* ── Astro Relic game styles ─────────────────────────────────────────── */
+
+@layer base {
+  html,
+  body {
+    height: 100%;
+    overscroll-behavior: none;
+  }
+
+  canvas {
+    display: block;
+  }
+}
+
+body {
+  font-family: "IBM Plex Mono", "Noto Sans Bengali", monospace;
+}
+
+.font-display {
+  font-family: "Space Grotesk", "Noto Sans Bengali", sans-serif;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes slidein {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
