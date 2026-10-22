@@ -33,7 +33,7 @@ export class StoryScene implements Scene {
     // terrain disc
     const geo = new THREE.CircleGeometry(60, 96, 0, Math.PI * 2);
     geo.rotateX(-Math.PI / 2);
-    const pos = geo.attributes.position;
+    const pos = geo.attributes.position as THREE.BufferAttribute;
     const colors = new Float32Array(pos.count * 3);
     const base = new THREE.Color(0x8a4426);
     const light = new THREE.Color(0xb86a42);
@@ -74,7 +74,7 @@ export class StoryScene implements Scene {
     });
 
     store.set({ showStory: true, storyIndex: 0 });
-    this.mode = STORY[0].camera;
+    this.mode = STORY[0]?.camera ?? 'orbit';
   }
 
   resize(w: number, h: number) {
