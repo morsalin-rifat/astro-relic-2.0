@@ -493,7 +493,7 @@ export class SolarScene implements Scene {
         group,
         orbitLine: orbitRing,
         ...(cloudsMesh ? { clouds: cloudsMesh } : {}),
-        rings: ringsMesh,
+        ...(ringsMesh ? { rings: ringsMesh } as {} | { rings: typeof ringsMesh } : {}),
         radius: b.radius3d,
       });
     });
