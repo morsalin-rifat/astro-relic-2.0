@@ -1,24 +1,58 @@
+import { lazy, Suspense, useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+// The game bundle (three.js + game modules) reads browser APIs at module load,
+// so it is imported lazily and only rendered after hydration.
+const Game = lazy(() => import("@/components/game/Game"));
+
+const TITLE = "Astro Relic — Abandoned but Not Forgotten";
+const DESCRIPTION =
+  "An interactive 3D space narrative game exploring forgotten relics and mysteries across Mars and the solar system.";
+
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: TITLE },
+      { name: "description", content: DESCRIPTION },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function LoadingScreen() {
   return (
     <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
+      className="flex h-screen w-screen items-center justify-center"
+      style={{ backgroundColor: "#030308", color: "#ece7db" }}
     >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+      <div className="text-center">
+        <div className="font-display text-2xl font-bold tracking-[0.3em] uppercase">
+          Astro Relic
+        </div>
+        <p className="mt-4 text-xs tracking-[0.4em] text-white/50 uppercase">
+          Initializing mission…
+        </p>
+      </div>
     </div>
+  );
+}
+
+function Index() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return <LoadingScreen />;
+
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <Game />
+    </Suspense>
   );
 }
