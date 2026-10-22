@@ -345,9 +345,12 @@ export function createJupiterTexture(): THREE.CanvasTexture {
         const turb = fbm((u + wave / s) * 18, v * 14, 3);
         const idx = (y * s + x) * 4;
         const tint = (turb - 0.5) * 35;
-        d[idx] = Math.max(0, Math.min(255, d[idx] + tint));
-        d[idx + 1] = Math.max(0, Math.min(255, d[idx + 1] + tint * 0.7));
-        d[idx + 2] = Math.max(0, Math.min(255, d[idx + 2] + tint * 0.4));
+        const r = d[idx] ?? 0;
+        const g = d[idx + 1] ?? 0;
+        const b = d[idx + 2] ?? 0;
+        d[idx] = Math.max(0, Math.min(255, r + tint));
+        d[idx + 1] = Math.max(0, Math.min(255, g + tint * 0.7));
+        d[idx + 2] = Math.max(0, Math.min(255, b + tint * 0.4));
       }
     }
     ctx.putImageData(imgData, 0, 0);
