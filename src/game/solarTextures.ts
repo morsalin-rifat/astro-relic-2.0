@@ -285,13 +285,13 @@ export function createMarsTexture(): THREE.CanvasTexture {
         // Dark volcanic basalt regions (Syrtis Major, Acidalia Planitia)
         if (n < 0.42) {
           const darkFactor = 0.65 + n * 0.8;
-          d[idx] = Math.floor(d[idx] * darkFactor * 0.85);
-          d[idx + 1] = Math.floor(d[idx + 1] * darkFactor * 0.7);
-          d[idx + 2] = Math.floor(d[idx + 2] * darkFactor * 0.7);
+          d[idx] = Math.floor((d[idx] ?? 0) * darkFactor * 0.85);
+          d[idx + 1] = Math.floor((d[idx + 1] ?? 0) * darkFactor * 0.7);
+          d[idx + 2] = Math.floor((d[idx + 2] ?? 0) * darkFactor * 0.7);
         } else if (n > 0.6) {
           // Bright highlands / Olympus Mons plateaus
-          d[idx] = Math.min(255, d[idx] + 25);
-          d[idx + 1] = Math.min(255, d[idx + 1] + 15);
+          d[idx] = Math.min(255, (d[idx] ?? 0) + 25);
+          d[idx + 1] = Math.min(255, (d[idx + 1] ?? 0) + 15);
         }
       }
     }
@@ -329,7 +329,7 @@ export function createJupiterTexture(): THREE.CanvasTexture {
 
     const bandHeight = s / colors.length;
     for (let i = 0; i < colors.length; i++) {
-      ctx.fillStyle = colors[i];
+      ctx.fillStyle = colors[i] ?? '#000000';
       ctx.fillRect(0, i * bandHeight, s, bandHeight + 2);
     }
 
