@@ -520,6 +520,85 @@ function Joystick() {
   );
 }
 
+/* ---------------- Homepage telemetry bar ---------------- */
+function TelemetryBar() {
+  const phase = useGame((s) => s.phase);
+  const lang = useGame((s) => s.lang);
+  const muted = useGame((s) => s.muted);
+  const [utc, setUtc] = useState('--:--:--');
+
+  useEffect(() => {
+    if (phase !== 'home') return;
+    const tick = () => setUtc(new Date().toISOString().slice(11, 19));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [phase]);
+
+  if (phase !== 'home') return null;
+
+  return (
+    <div className="absolute top-0 inset-x-0 z-40 pointer-events-auto">
+      <div className="telemetry-bar border-b border-white/10 backdrop-blur-md flex items-center justify-between gap-2 sm:gap-4 px-3 sm:px-6 h-11">
+        {/* left — deep space network status */}
+        <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+          <span className="flex items-center gap-1.5 text-[10px] tracking-[0.2em] text-[#7dffb0] whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#7dffb0] animate-[blinkdot_1.6s_ease-in-out_infinite]" />
+            {t(TELEMETRY.dsn, lang)}
+          </span>
+          <span className="hidden md:block text-[10px] tracking-[0.2em] text-white/45 whitespace-nowrap">
+            {t(TELEMETRY.freq, lang)}
+          </span>
+          <span className="hidden lg:block text-[10px] tracking-[0.2em] text-white/45 whitespace-nowrap">
+            {t(TELEMETRY.protocol, lang)}
+          </span>
+        </div>
+
+        {/* center — mission time / location */}
+        <div className="hidden sm:flex items-center gap-3 text-[10px] tracking-[0.25em] text-white/55 whitespace-nowrap">
+          <span className="text-[#ffd97d]">{t(TELEMETRY.sol, lang)}</span>
+          <span className="w-px h-3 bg-white/15" />
+          <span>{t(TELEMETRY.vector, lang)}</span>
+        </div>
+
+        {/* right — UTC clock + sound/language toggles */}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <span className="hidden sm:block text-[10px] tracking-[0.15em] text-white/45 tabular-nums">
+            {utc} UTC
+          </span>
+          <button
+            onClick={() => {
+              const next = !muted;
+              store.set({ muted: next });
+              audio.setMuted(next);
+              if (!next) audio.beep();
+            }}
+            aria-label={t(UI.mute, lang)}
+            className="flex items-end gap-[2px] h-6 px-2 py-1.5 border border-white/15 hover:border-[#00f0ff] transition-colors"
+          >
+            {[0, 1, 2, 3, 4].map((i) => (
+              <span
+                key={i}
+                className={`w-[2px] h-3 origin-bottom ${muted ? 'bg-white/25' : 'bg-[#00f0ff]'}`}
+                style={muted ? undefined : { animation: `wave 1.1s ease-in-out ${i * 0.12}s infinite` }}
+              />
+            ))}
+          </button>
+          <button
+            onClick={() => {
+              store.set({ lang: lang === 'en' ? 'bn' : 'en' });
+              audio.beep();
+            }}
+            className="px-2.5 py-1 border border-white/15 text-[10px] tracking-[0.2em] text-white/70 hover:border-[#ffd97d] hover:text-[#ffd97d] transition-colors"
+          >
+            {t(UI.langBtn, lang)}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ---------------- Root overlays ---------------- */
 export function Overlays() {
   const fading = useGame((s) => s.fading);
