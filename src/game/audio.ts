@@ -90,6 +90,28 @@ class AmbientAudio {
     g.linearRampToValueAtTime(store.get().muted ? 0 : v, this.ctx.currentTime + secs);
   }
 
+  // Short radio blip for UI feedback (works even before the ambient drone starts).
+  beep(freq = 880) {
+    if (store.get().muted) return;
+    this.ensure();
+    const ctx = this.ctx!;
+    const o = ctx.createOscillator();
+    o.type = 'square';
+    o.frequency.value = freq;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.045, ctx.currentTime + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.13);
+    o.connect(g);
+    g.connect(ctx.destination);
+    o.start();
+    o.stop(ctx.currentTime + 0.15);
+    setTimeout(() => {
+      g.disconnect();
+      o.disconnect();
+    }, 250);
+  }
+
   setMuted(muted: boolean) {
     if (!this.ctx || !this.master) return;
     this.fadeTo(muted ? 0 : 1, 0.4);
