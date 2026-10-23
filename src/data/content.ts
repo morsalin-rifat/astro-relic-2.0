@@ -105,6 +105,15 @@ export const CINEMATIC_BEATS = [
   { en: 'TOUCHDOWN & BOUNCE · ARES VALLIS, JULY 4, 1997', bn: 'অবতরণ ও বাউন্স · এরিস ভ্যালিস, ৪ জুলাই ১৯৯৭', at: 14.5 },
 ];
 
+// ---------- Homepage telemetry bar ----------
+export const TELEMETRY = {
+  dsn: { en: 'DSN: ONLINE', bn: 'ডিএসএন: সক্রিয়' },
+  freq: { en: 'FREQ: 8.4 GHz', bn: 'ফ্রিকোয়েন্সি: ৮.৪ গিগাহার্জ' },
+  protocol: { en: 'RELIC PROTOCOL: V2.4', bn: 'রিলিক প্রোটোকল: V2.4' },
+  sol: { en: 'SOL 001', bn: 'সল ০০১' },
+  vector: { en: 'ARES VALLIS VECTOR', bn: 'এরিস ভ্যালিস ভেক্টর' },
+};
+
 // ---------- Journey map missions ----------
 export const MISSIONS = [
   { id: 'pathfinder', name: 'MARS PATHFINDER / SOJOURNER', bn: 'মার্স পাথফাইন্ডার / সোজার্নার' },

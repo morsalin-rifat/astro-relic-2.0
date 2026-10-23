@@ -188,3 +188,31 @@ body {
     transform: translateX(0);
   }
 }
+
+/* ── Telemetry bar (homepage mission control) ── */
+.telemetry-bar {
+  background:
+    linear-gradient(180deg, rgba(0, 240, 255, 0.05), transparent 65%),
+    rgba(3, 3, 8, 0.55);
+  box-shadow: 0 1px 0 rgba(0, 240, 255, 0.08) inset;
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: scaleY(0.25);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes blinkdot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}

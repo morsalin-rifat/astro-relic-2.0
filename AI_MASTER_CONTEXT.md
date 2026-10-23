@@ -47,4 +47,5 @@ Lovable ⇄ GitHub (code bank) ⇄ Google AI Studio / Cursor. Work in one tool a
 
 ## Progress log
 - [x] Project migrated from github.com/morsalin-rifat/astro-relic
-- [ ] 1a Top telemetry bar (next)
+- [x] 1a Top telemetry bar (DSN ONLINE, FREQ 8.4 GHz, RELIC PROTOCOL V2.4 · SOL 001 · ARES VALLIS · live UTC clock · sound waveform toggle + BN/EN switch; audio.beep() UI blip; strings in TELEMETRY in content.ts; .telemetry-bar/wave/blinkdot in styles.css) — homepage only, compact at 393px
+- [ ] 1b Hero title + "INITIATE EXPEDITION" glowing button (next)
