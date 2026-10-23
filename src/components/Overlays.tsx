@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { store, useGame, t } from '../state/store';
 import { audio } from '../game/audio';
-import { UI, MISSIONS } from '../data/content';
+import { UI, MISSIONS, TELEMETRY } from '../data/content';
 import { STORY, HOTSPOTS, HOTSPOT_ORDER } from '../data/story';
 import { SolarHUD } from './SolarHUD';
 
