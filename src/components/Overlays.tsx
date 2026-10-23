@@ -614,6 +614,7 @@ export function Overlays() {
       <JourneyMap />
       <SolarHUD />
       <HUD />
+      <TelemetryBar />
       <TopControls />
       <Joystick />
       {/* backdrop fade overlay */}
