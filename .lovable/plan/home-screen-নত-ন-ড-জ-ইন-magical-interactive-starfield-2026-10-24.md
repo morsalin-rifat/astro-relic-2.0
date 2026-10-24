@@ -47,4 +47,6 @@ START ADVENTURE ক্লিক → আগের মতোই journey choice →
 
 - শুধু `phase: 'home'` এর কোড বদলাবে; `start` ইভেন্ট ও পরের সব ফেজ অক্ষত।
 - `src/game/*` ব্রাউজার-ওনলি কোড — আগের মতো lazy client-only mount-এর পেছনেই থাকবে, SSR কোডে import নয়।
-- পারফরম্যান্স বাজেট: তারা = একটা Points জ্যামিতি (কাস্টম shader material দিয়ে twinkle), ডাস্ট কণা ≤ 200, মোবাইলে স্মুথ।
+  - পারফরম্যান্স বাজেট: তারা = একটা Points জ্যামিতি (কাস্টম shader material দিয়ে twinkle), ডাস্ট কণা ≤ 200, মোবাইলে স্মুথ।
+  - akhan theke game engine use korte paro,,,frist er scren tai jeno animateed ar atractive hoy
+  - &nbsp;
