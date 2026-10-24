@@ -48,4 +48,5 @@ Lovable ⇄ GitHub (code bank) ⇄ Google AI Studio / Cursor. Work in one tool a
 ## Progress log
 - [x] Project migrated from github.com/morsalin-rifat/astro-relic
 - [x] 1a Top telemetry bar (DSN ONLINE, FREQ 8.4 GHz, RELIC PROTOCOL V2.4 · SOL 001 · ARES VALLIS · live UTC clock · sound waveform toggle + BN/EN switch; audio.beep() UI blip; strings in TELEMETRY in content.ts; .telemetry-bar/wave/blinkdot in styles.css) — homepage only, compact at 393px
-- [ ] 1b Hero title + "INITIATE EXPEDITION" glowing button (next)
+- [x] 1b Home screen REDESIGNED — "Magical Interactive Starfield" (replaces old Earth/solar home): GPU twinkle shader stars, mouse-reactive near stars (brighten + drift + stardust trail), periodic shooting star, glowing procedural Mars, Nova bot waving bottom-right, camera parallax; new HomeUI: badge "A NASA SPACE APPS STORY ADVENTURE", floating glow ASTRO RELIC title, tagline EN+BN, glowing pulsing "START ADVENTURE / মহাকাশ যাত্রা শুরু" button (hover beep), star-play hint; styles: .astro-badge/.astro-title/.cta-adventure + keyframes titlefloat/cta-pulse; flow unchanged (start → journey choice → cinematic). Old cta/ctaSub strings kept for other references.
+- [ ] 2. Universe screen (Mars/Moon choose) + Nova tutorial (next)

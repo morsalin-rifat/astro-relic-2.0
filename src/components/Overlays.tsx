@@ -107,30 +107,31 @@ function HomeUI() {
   if (phase !== 'home') return null;
   return (
     <div
-      className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none transition-opacity duration-1000"
+      className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 pointer-events-none transition-opacity duration-1000"
       style={{ opacity: show ? 1 : 0 }}
     >
-      <div className="text-[11px] tracking-[0.6em] text-[#9fd8ff]/70 mb-6">{t(UI.tagline1, lang).toUpperCase()}</div>
-      <h1 className="font-display text-[clamp(3rem,10vw,7.5rem)] leading-none tracking-[0.08em] text-[#f3ede0] select-none">
+      <div className="astro-badge mb-6">{t(UI.badge, lang)}</div>
+      <h1 className="font-display astro-title text-[clamp(2.8rem,9vw,7rem)] leading-none tracking-[0.08em] select-none text-center">
         ASTRO&nbsp;RELIC
       </h1>
-      <div className="mt-6 text-center text-[13px] text-white/55 tracking-[0.2em] leading-7">
+      <div className="mt-4 text-[11px] sm:text-[13px] tracking-[0.35em] text-[#ffd97d]/90 uppercase text-center">
+        {t(UI.tagline1, lang)}
+      </div>
+      <div className="mt-5 text-center text-[12px] sm:text-[13px] text-white/60 tracking-[0.18em] leading-7">
         <div>{t(UI.tagline2, lang)}</div>
         <div>{t(UI.tagline3, lang)}</div>
       </div>
       <button
+        onPointerEnter={() => audio.beep()}
         onClick={() => store.emit('start')}
-        className="pointer-events-auto mt-12 group relative px-10 py-4 overflow-hidden border border-[#ffd97d]/60"
+        className="pointer-events-auto cta-adventure mt-10"
       >
-        <span
-          className="absolute inset-0 bg-[#ffd97d] origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-300"
-          style={{ transitionTimingFunction: POP }}
-        />
-        <span className="relative z-10 tracking-[0.3em] text-sm text-[#ffd97d] group-hover:text-black transition-colors duration-300">
-          {t(UI.cta, lang)} →
-        </span>
+        <span className="cta-rocket">🚀</span>
+        <span>{t(UI.cta, lang)}</span>
       </button>
-      <div className="mt-5 text-[10px] tracking-[0.4em] text-white/35">{t(UI.ctaSub, lang)}</div>
+      <div className="mt-6 text-[10px] sm:text-[11px] tracking-[0.3em] text-white/40 text-center">
+        {t(UI.starHint, lang)}
+      </div>
     </div>
   );
 }
