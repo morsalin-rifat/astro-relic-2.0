@@ -448,8 +448,6 @@ export class HomeScene implements Scene {
 
   update(dt: number, t: number) {
     this.farMat.uniforms.uTime.value = t;
-    this.farGeo.getAttribute('position');
-    this.scene.children; // no-op keep refs
 
     // slow cosmic drift of the far field
     this.camera.position.x += (this.mouse.x * 1.1 - this.camera.position.x) * Math.min(1, dt * 2.2);
