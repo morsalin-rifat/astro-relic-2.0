@@ -124,3 +124,94 @@ export const MISSIONS = [
   { id: 'phoenix', name: 'PHOENIX', bn: 'ফিনিক্স' },
   { id: 'insight', name: 'INSIGHT', bn: 'ইনসাইট' },
 ];
+
+// ---------- Game hub (mission command menu) ----------
+export const HUB = {
+  novaGreet: { en: "Hi! I'm Nova. What shall we do?", bn: 'হাই! আমি নোভা। এবার কী করব?' },
+  newGame: { en: 'NEW GAME', bn: 'নতুন গেম' },
+  chapters: { en: 'CHAPTERS', bn: 'অধ্যায়' },
+  howToPlay: { en: 'HOW TO PLAY', bn: 'কীভাবে খেলবেন' },
+  resetGame: { en: 'RESET GAME', bn: 'গেম রিসেট' },
+  home: { en: 'HOME', bn: 'হোম' },
+  chapterTrail: { en: 'EXPEDITION TRAIL', bn: 'অভিযানের পথ' },
+  launch: { en: 'LAUNCH', bn: 'শুরু করুন' },
+  done: { en: 'COMPLETE', bn: 'সম্পন্ন' },
+  soon: { en: 'SOON', bn: 'শীঘ্রই' },
+  moonSoon: { en: 'MOON UNIVERSE — COMING SOON', bn: 'চাঁদ ইউনিভার্স — শীঘ্রই আসছে' },
+  inProduction: {
+    en: 'This chapter is still being built — finish Chapter 01 first!',
+    bn: 'এই অধ্যায়টি এখনো তৈরি হচ্ছে — আগে অধ্যায় ০১ শেষ করুন!',
+  },
+  resetConfirm: { en: 'Erase all mission progress?', bn: 'সব মিশন প্রগ্রেস মুছে যাবে?' },
+  resetWarn: { en: 'Flags and tutorial progress will be lost forever.', bn: 'পতাকা ও টিউটোরিয়াল প্রগ্রেস চিরতরে মুছে যাবে।' },
+  yes: { en: 'YES, ERASE', bn: 'হ্যাঁ, মুছে দাও' },
+  no: { en: 'CANCEL', bn: 'বাতিল' },
+  resetDone: { en: 'All progress erased. A fresh journey awaits!', bn: 'সব প্রগ্রেস মুছে গেছে। নতুন করে যাত্রা শুরু!' },
+  close: { en: 'GOT IT', bn: 'বুঝেছি' },
+};
+
+export const HOWTO = [
+  {
+    icon: '🚶',
+    title: { en: 'Explore the surface', bn: 'পৃষ্ঠ ঘোরাঘুরি' },
+    body: {
+      en: 'Walk with WASD or the on-screen joystick. Drag to look around.',
+      bn: 'WASD বা স্ক্রিনের জয়স্টিক দিয়ে হাঁটুন। টেনে চারপাশ দেখুন।',
+    },
+  },
+  {
+    icon: '🤖',
+    title: { en: 'Meet the old machines', bn: 'পুরনো যন্ত্রদের সাথে পরিচয়' },
+    body: {
+      en: 'Follow the beacon to find forgotten rovers and landers. They remember everything.',
+      bn: 'বিকনের আলো অনুসরণ করে ভুলে যাওয়া রোভার-ল্যান্ডার খুঁজুন। তারা সব মনে রাখে।',
+    },
+  },
+  {
+    icon: '🔊',
+    title: { en: 'Hear their true stories', bn: 'তাদের আসল গল্প শুনুন' },
+    body: {
+      en: 'Click a machine to hear its real NASA story — in English or Bangla.',
+      bn: 'যন্ত্রে ক্লিক করলেই তার আসল নাসা গল্প — ইংরেজি বা বাংলায়।',
+    },
+  },
+  {
+    icon: '🚩',
+    title: { en: 'Raise the flag', bn: 'পতাকা উড়াও' },
+    body: {
+      en: 'Finish a chapter to raise its flag and unlock the next mission.',
+      bn: 'একটি অধ্যায় শেষ করলেই পতাকা উড়বে ও পরের মিশন খুলবে।',
+    },
+  },
+];
+
+export const CHAPTERS = [
+  {
+    universe: 'mars' as const,
+    id: 'ch1',
+    ready: true,
+    name: { en: 'ARES VALLIS DESCENT', bn: 'এরিস ভ্যালিস অবতরণ' },
+    tag: { en: '1997 · PATHFINDER & SOJOURNER', bn: '১৯৯৭ · পাথফাইন্ডার ও সোজার্নার' },
+  },
+  {
+    universe: 'mars' as const,
+    id: 'ch2',
+    ready: false,
+    name: { en: 'AWAKENING OF SOJOURNER', bn: 'সোজার্নারের জাগরণ' },
+    tag: { en: 'FIRST WHEELS ON ANOTHER PLANET', bn: 'অন্য গ্রহে প্রথম চাকা' },
+  },
+  {
+    universe: 'mars' as const,
+    id: 'ch3',
+    ready: false,
+    name: { en: 'CARL SAGAN MEMORIAL STATION', bn: 'কার্ল সেগান মেমোরিয়াল স্টেশন' },
+    tag: { en: 'THE LAST SIGNAL · SEPT 1997', bn: 'শেষ সংকেত · সেপ্টেম্বর ১৯৯৭' },
+  },
+  {
+    universe: 'moon' as const,
+    id: 'ch4',
+    ready: false,
+    name: { en: 'TRANQUILITY BASE', bn: 'ট্রানকুইলিটি বেস' },
+    tag: { en: '1969 · APOLLO 11', bn: '১৯৬৯ · অ্যাপোলো ১১' },
+  },
+];

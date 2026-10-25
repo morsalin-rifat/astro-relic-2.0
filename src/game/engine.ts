@@ -3,6 +3,7 @@ import { store, type Phase } from '../state/store';
 import { audio } from './audio';
 import type { Scene } from './utils';
 import { HomeScene } from './scenes/home';
+import { HubScene } from './scenes/hub';
 import { MarsScene } from './scenes/marsFocus';
 import { MarsCinematicScene } from './scenes/cinematic';
 import { MarsWorldScene } from './scenes/marsWorld';
@@ -14,6 +15,8 @@ function makeScene(phase: Phase, renderer: THREE.WebGLRenderer): Scene | null {
   switch (phase) {
     case 'home':
       return new HomeScene(renderer);
+    case 'hub':
+      return new HubScene(renderer);
     case 'solar':
       return new MarsScene(renderer);
     case 'map':
@@ -67,7 +70,11 @@ export class Engine {
     this.disposers.push(store.on('engine:goto', (d) => this.transitionTo(d as Phase)));
     this.onBus('start', () => {
       audio.play('space');
-      this.transitionTo('solar');
+      this.transitionTo('hub');
+    });
+    this.onBus('hub:newgame', () => {
+      store.set({ showChoice: false, current: null, queue: [], choices: null });
+      this.transitionTo('cinematic');
     });
     this.onBus('choose:mars', () => {
       store.set({ showChoice: false, current: null, queue: [], choices: null });
@@ -80,13 +87,13 @@ export class Engine {
     });
     this.onBus('openInspect', () => this.transitionTo('inspect'));
     this.onBus('finishInspect', () => this.transitionTo('complete'));
-    this.onBus('nextChapter', () => this.transitionTo('map'));
+    this.onBus('nextChapter', () => this.transitionTo('hub'));
     this.onBus('toSolar', () => this.transitionTo('solar'));
     this.onBus('replay', () => this.transitionTo('cinematic'));
 
     // dev aid: ?phase=explore
     const forced = new URLSearchParams(location.search).get('phase') as Phase | null;
-    const initial: Phase = forced && ['home', 'solar', 'cinematic', 'explore', 'story', 'inspect', 'complete', 'map'].includes(forced) ? forced : 'home';
+    const initial: Phase = forced && ['home', 'hub', 'solar', 'cinematic', 'explore', 'story', 'inspect', 'complete', 'map'].includes(forced) ? forced : 'home';
     this.setPhase(initial);
     store.set({ phase: initial });
     this.loop();

@@ -3,6 +3,7 @@ import { useSyncExternalStore } from 'react';
 export type Lang = 'en' | 'bn';
 export type Phase =
   | 'home'
+  | 'hub'
   | 'solar'
   | 'cinematic'
   | 'explore'
@@ -28,6 +29,7 @@ export interface Choice {
 
 interface GameState {
   phase: Phase;
+  universe: 'mars' | 'moon';
   lang: Lang;
   muted: boolean;
   // dialogue
@@ -67,6 +69,7 @@ const persisted = (() => {
 class Store {
   state: GameState = {
     phase: 'home',
+    universe: 'mars',
     lang: persisted.lang === 'bn' ? 'bn' : 'en',
     muted: false,
     queue: [],
