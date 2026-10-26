@@ -128,6 +128,8 @@ export const MISSIONS = [
 // ---------- Game hub (mission command menu) ----------
 export const HUB = {
   novaGreet: { en: "Hi! I'm Nova. What shall we do?", bn: 'হাই! আমি নোভা। এবার কী করব?' },
+  marsExp: { en: 'MARS EXPEDITION', bn: 'মঙ্গল অভিযান' },
+  moonExp: { en: 'MOON EXPEDITION', bn: 'চাঁদ অভিযান' },
   newGame: { en: 'NEW GAME', bn: 'নতুন গেম' },
   chapters: { en: 'CHAPTERS', bn: 'অধ্যায়' },
   howToPlay: { en: 'HOW TO PLAY', bn: 'কীভাবে খেলবেন' },
