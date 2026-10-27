@@ -70,5 +70,12 @@ Lovable ⇄ GitHub (code bank) ⇄ Google AI Studio / Cursor. Work in one tool a
 - [ ] 3. Chapter Journey Map (AAA, Death Stranding/Horizon style): mountaintop vista, glowing trail through valley, GPU-wind cloth flags with beacon rings per chapter, click = camera dolly + DOF, glass hologram briefing card + [INITIATE MISSION], unlock shockwave along trail. Mars chapters: Pathfinder/Sojourner 1997, Opportunity 2004, Spirit 2004. Moon: Apollo 11 1969, Apollo 15 LRV, Artemis.
 - [ ] 4. Cinematic descent → Level 1 surface exploration → GTA-style choices with real NASA facts → flag raising.
 
+## Visual inspiration (user refs, Oct 2026) — INSPIRATION ONLY, NEVER COPY
+- Sci-fi HUD: huge outline watermark word (MARS/MOON) behind 3D, thin corner brackets, coordinates, live radio waveform "MISSION TRANSMISSION // SIGNAL 01", telemetry tags (Mars 225M km · 7 mo · -63°C; Moon 384,400 km · 3 days · -130°C).
+- Chapter/rover panels: dark glass bento cards, rotating 3D rover, battery/health/signal gauges.
+- Astro Relic core: spiky glowing particle sphere (Three.js) = the mysterious relic players track.
+- Keep our own story, layout and identity; save credits — small focused steps.
+- DONE: hub camera now looks down (lookAt y=-2.2) so terrain is visible.
+
 ## Dual universe rule
 Mars and Moon share ONE engine/mechanics/controls; only visuals, gravity (Mars 0.38g, Moon 0.16g), chapters and Nova lines differ.
