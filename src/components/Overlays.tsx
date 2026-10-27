@@ -570,23 +570,29 @@ function TelemetryBar() {
 
 /* ---------------- Mission Command Hub ---------------- */
 
-type HubPanel = "chapters" | "howto" | "reset" | null;
+type HubPanel = 'chapters' | 'howto' | 'reset' | null;
 
-const HUB_ACTIONS: { id: string; icon: string; label: { en: string; bn: string }; num: string }[] =
-  [
-    { id: "newgame", icon: "▶", label: HUB.newGame, num: "01" },
-    { id: "chapters", icon: "🚩", label: HUB.chapters, num: "02" },
-    { id: "howto", icon: "🤖", label: HUB.howToPlay, num: "03" },
-    { id: "reset", icon: "🔄", label: HUB.resetGame, num: "04" },
-    { id: "home", icon: "⌂", label: HUB.home, num: "05" },
-  ];
+const HUB_ACTIONS: {
+  id: string;
+  icon: string;
+  label: { en: string; bn: string };
+  desc: { en: string; bn: string };
+  num: string;
+  primary?: boolean;
+}[] = [
+  { id: 'newgame', icon: '▶', label: HUB.newGame, desc: HUB.newGameSub, num: '01', primary: true },
+  { id: 'chapters', icon: '🚩', label: HUB.chapters, desc: HUB.chaptersSub, num: '02' },
+  { id: 'howto', icon: '🤖', label: HUB.howToPlay, desc: HUB.howtoSub, num: '03' },
+  { id: 'reset', icon: '🔄', label: HUB.resetGame, desc: HUB.resetSub, num: '04' },
+  { id: 'home', icon: '⌂', label: HUB.home, desc: HUB.homeSub, num: '05' },
+];
 
-function FlagMark({ tone }: { tone: "gold" | "locked" }) {
+function FlagMark({ tone }: { tone: 'gold' | 'locked' }) {
   return (
     <div className="hub-flag" aria-hidden>
-      <div className={`hub-flag-pole ${tone === "gold" ? "hub-flag-pole-gold" : ""}`} />
+      <div className={`hub-flag-pole ${tone === 'gold' ? 'hub-flag-pole-gold' : ''}`} />
       <div
-        className={`hub-flag-cloth ${tone === "gold" ? "hub-flag-cloth-gold" : "hub-flag-cloth-locked"}`}
+        className={`hub-flag-cloth ${tone === 'gold' ? 'hub-flag-cloth-gold' : 'hub-flag-cloth-locked'}`}
       />
     </div>
   );
@@ -602,7 +608,7 @@ function HubUI() {
   const [entered, setEntered] = useState(false);
 
   useEffect(() => {
-    if (phase === "hub") {
+    if (phase === 'hub') {
       setPanel(null);
       setToast(null);
       const id = window.setTimeout(() => setEntered(true), 250);
@@ -612,7 +618,7 @@ function HubUI() {
     return undefined;
   }, [phase]);
 
-  if (phase !== "hub") return null;
+  if (phase !== 'hub') return null;
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -621,95 +627,182 @@ function HubUI() {
 
   const menuAction = (id: string) => {
     audio.beep();
-    if (id === "newgame") store.emit("hub:newgame");
-    else if (id === "home") store.emit("engine:goto", "home");
-    else setPanel((p) => (p === id ? null : (id as "chapters" | "howto" | "reset")));
+    if (id === 'newgame') store.emit('hub:newgame');
+    else if (id === 'home') store.emit('engine:goto', 'home');
+    else setPanel((p) => (p === id ? null : (id as 'chapters' | 'howto' | 'reset')));
   };
 
-  const switchUniverse = (u: "mars" | "moon") => {
+  const switchUniverse = (u: 'mars' | 'moon') => {
     if (u === universe) return;
-    audio.beep(u === "moon" ? 640 : 500);
+    audio.beep(u === 'moon' ? 640 : 500);
     store.set({ universe: u });
-    if (u === "moon") showToast(t(HUB.moonSoon, lang));
+    if (u === 'moon') showToast(t(HUB.moonSoon, lang));
   };
 
   const chapters = CHAPTERS.filter((c) => c.universe === universe);
 
   return (
     <>
-      {/* universe switcher */}
-      <div className="absolute top-5 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
-        <div className="pointer-events-auto hub-glass rounded-full p-1 flex items-center">
-          {(["mars", "moon"] as const).map((u) => (
+      {/* Planetary Orbital Dock (Top Center) */}
+      <div className="absolute top-4 sm:top-5 left-1/2 -translate-x-1/2 z-30 pointer-events-none flex flex-col items-center gap-1.5">
+        <div className="pointer-events-auto hub-planet-dock flex items-center gap-1">
+          {(['mars', 'moon'] as const).map((u) => (
             <button
               key={u}
               onClick={() => switchUniverse(u)}
               onPointerEnter={() => audio.beep()}
-              className={`px-4 sm:px-5 py-1.5 rounded-full text-[10px] sm:text-[11px] tracking-[0.22em] whitespace-nowrap transition-all duration-300 ${
-                universe === u ? "hub-universe-active" : "text-white/55 hover:text-white/90"
+              className={`px-4 sm:px-6 py-2 rounded-full text-[10px] sm:text-[11px] tracking-[0.22em] whitespace-nowrap transition-all duration-300 flex items-center gap-2 ${
+                universe === u ? 'hub-universe-active' : 'text-white/60 hover:text-white/95'
               }`}
             >
-              {u === "mars" ? "🔴" : "⚪"} {t(u === "mars" ? HUB.marsExp : HUB.moonExp, lang)}
+              <span className="text-sm">{u === 'mars' ? '🔴' : '⚪'}</span>
+              <span>{t(u === 'mars' ? HUB.marsExp : HUB.moonExp, lang)}</span>
             </button>
           ))}
         </div>
+        <div className="hidden sm:block text-[9px] font-mono tracking-[0.28em] text-white/40 drop-shadow">
+          {universe === 'mars' ? 'TARGET: MARS · LAT 19.33° N, LON 33.55° W' : 'TARGET: MOON · LAT 0.67° N, LON 23.47° E'}
+        </div>
       </div>
 
-      {/* Nova speech bubble */}
-      <div className="absolute top-16 sm:top-20 left-4 sm:left-6 z-30 max-w-[290px] pointer-events-none">
+      {/* Nova AI Companion Terminal (Top Left) */}
+      <div className="absolute top-4 sm:top-6 left-4 sm:left-6 z-30 max-w-[320px] pointer-events-none">
         <div className="flex items-start gap-3">
-          <img
-            src="/images/nova_ai_guide_avatar_1791384201763.jpg"
-            alt="Nova"
-            referrerPolicy="no-referrer"
-            className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-[#00f0ff] object-cover shadow-[0_0_18px_rgba(0,240,255,0.4)] flex-shrink-0"
-          />
-          <div className="hub-glass rounded-2xl rounded-tl-none px-4 py-3 text-[12px] leading-relaxed text-[#ece7db] animate-[fadein_0.9s_ease]">
-            {t(HUB.novaGreet, lang)}
+          <div className="relative flex-shrink-0">
+            <img
+              src="/images/nova_ai_guide_avatar_1791384201763.jpg"
+              alt="Nova AI Guide"
+              referrerPolicy="no-referrer"
+              className="w-13 h-13 sm:w-14 sm:h-14 rounded-full border-2 border-[#00f0ff] object-cover hub-nova-glow pointer-events-auto"
+            />
+            <span className="absolute bottom-0.5 right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-black" />
+          </div>
+          <div className="pointer-events-auto hub-console-panel px-4 py-3 text-[#ece7db] animate-[fadein_0.9s_ease] border-[#00f0ff]/35">
+            <div className="flex items-center justify-between gap-3 mb-1.5 pb-1 border-b border-white/10">
+              <span className="text-[9px] font-mono tracking-[0.22em] text-[#00f0ff]">AI COMPANION · NOVA</span>
+              <span className="flex items-center gap-0.5" aria-hidden>
+                <span className="w-1 h-2 bg-[#00f0ff] animate-pulse rounded-full" />
+                <span className="w-1 h-3.5 bg-[#00f0ff] animate-pulse rounded-full [animation-delay:150ms]" />
+                <span className="w-1 h-1.5 bg-[#00f0ff] animate-pulse rounded-full [animation-delay:300ms]" />
+              </span>
+            </div>
+            <div className="text-[12px] leading-relaxed text-[#ece7db]/95">
+              {t(HUB.novaGreet, lang)}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* right-side Pragmata menu */}
+      {/* Planetary Target Telemetry Widget (Bottom Left) */}
+      <div className="hidden md:block absolute bottom-6 left-6 z-30 pointer-events-none">
+        <div className="pointer-events-auto hub-console-panel p-3.5 w-76">
+          <div className="flex items-center justify-between text-[9px] font-mono tracking-[0.25em] text-white/45 pb-2 border-b border-white/10">
+            <span className="text-[#00f0ff]">{t(HUB.metricsTitle, lang)}</span>
+            <span className="text-[#ffd97d]">{universe === 'mars' ? 'ARES VALLIS' : 'TRANQUILITY'}</span>
+          </div>
+          <div className="grid grid-cols-3 gap-2 mt-2.5 text-center">
+            <div className="p-1.5 rounded-lg bg-white/[0.04] border border-white/5">
+              <div className="text-[8px] text-white/40 tracking-wider font-mono">{t(HUB.gravity, lang)}</div>
+              <div className="text-[11px] font-mono text-[#ffd97d] font-semibold mt-0.5">
+                {universe === 'mars' ? '0.38 G' : '0.16 G'}
+              </div>
+            </div>
+            <div className="p-1.5 rounded-lg bg-white/[0.04] border border-white/5">
+              <div className="text-[8px] text-white/40 tracking-wider font-mono">{t(HUB.temp, lang)}</div>
+              <div className="text-[11px] font-mono text-[#00f0ff] font-semibold mt-0.5">
+                {universe === 'mars' ? '-63 °C' : '-130 °C'}
+              </div>
+            </div>
+            <div className="p-1.5 rounded-lg bg-white/[0.04] border border-white/5">
+              <div className="text-[8px] text-white/40 tracking-wider font-mono">{t(HUB.atmosphere, lang)}</div>
+              <div className="text-[11px] font-mono text-emerald-400 font-semibold mt-0.5">
+                {universe === 'mars' ? 'CO₂ 95%' : 'VACUUM'}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right-Side Mission Command Console Menu */}
       <div
-        className={`absolute right-3 sm:right-10 top-1/2 -translate-y-1/2 z-30 flex flex-col items-stretch gap-1 transition-all duration-700 ${
-          entered ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"
+        className={`absolute right-3 sm:right-8 top-1/2 -translate-y-1/2 z-30 transition-all duration-700 pointer-events-none ${
+          entered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
         }`}
       >
-        {HUB_ACTIONS.map((a) => (
-          <button
-            key={a.id}
-            onPointerEnter={() => audio.beep()}
-            onClick={() => menuAction(a.id)}
-            className="hub-menu-item pointer-events-auto"
-          >
-            <span className="hub-menu-num">{a.num}</span>
-            <span className="hub-menu-icon">{a.icon}</span>
-            <span className="hub-menu-label">{t(a.label, lang)}</span>
-          </button>
-        ))}
+        <div className="pointer-events-auto hub-console-panel w-[min(350px,92vw)] p-4 sm:p-5 flex flex-col gap-3">
+          {/* Console Header */}
+          <div className="flex items-center justify-between pb-2.5 border-b border-white/10">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#00f0ff] animate-pulse" />
+              <span className="text-[10px] tracking-[0.3em] text-[#00f0ff] font-mono">
+                {t(HUB.cmdConsole, lang)}
+              </span>
+            </div>
+            <span className="text-[9px] tracking-[0.18em] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
+              ● {t(HUB.onlineStatus, lang)}
+            </span>
+          </div>
+
+          <div className="text-[10px] tracking-[0.25em] text-white/40 uppercase -mt-0.5">
+            {t(HUB.selectDirective, lang)}
+          </div>
+
+          {/* Menu Action Cards */}
+          <div className="flex flex-col gap-2">
+            {HUB_ACTIONS.map((a) => (
+              <button
+                key={a.id}
+                onPointerEnter={() => audio.beep()}
+                onClick={() => menuAction(a.id)}
+                className={`group ${a.primary ? 'hub-action-card hub-action-card-primary' : 'hub-action-card'}`}
+              >
+                <div className="hub-action-icon">
+                  {a.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="hub-action-chip">{a.num}</span>
+                    <span className="font-display tracking-[0.16em] text-[13px] text-[#f6f1e4] group-hover:text-[#ffd97d] transition-colors truncate">
+                      {t(a.label, lang)}
+                    </span>
+                  </div>
+                  <div className="text-[10px] text-white/45 tracking-wide mt-0.5 truncate group-hover:text-white/75 transition-colors">
+                    {t(a.desc, lang)}
+                  </div>
+                </div>
+                <div className="text-[#ffd97d]/40 group-hover:text-[#ffd97d] group-hover:translate-x-1 transition-all text-sm font-bold pl-1">
+                  ›
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {/* Console Footer */}
+          <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[8px] font-mono tracking-widest text-white/35">
+            <span>ASTRO-RELIC OS // V2.4</span>
+            <span>DSN: ENCRYPTED</span>
+          </div>
+        </div>
       </div>
 
       {/* chapters panel with waving flags */}
       {panel === "chapters" && (
         <div className="absolute inset-y-0 left-0 z-40 flex items-center pl-4 sm:pl-10 pointer-events-none">
-          <div className="pointer-events-auto hub-glass w-[min(400px,92vw)] rounded-2xl p-6 animate-[hubrise_0.45s_ease]">
-            <div className="flex items-center justify-between mb-1">
-              <div className="text-[10px] tracking-[0.5em] text-[#e0603f]">
-                🚩 {t(HUB.chapterTrail, lang)}
-              </div>
+          <div className="pointer-events-auto hub-console-panel w-[min(420px,92vw)] p-6 animate-[hubrise_0.45s_ease]">
+            <div className="flex items-center justify-between mb-1 pb-2 border-b border-white/10">
+              <div className="text-[10px] tracking-[0.4em] text-[#ffd97d] font-mono">🚩 {t(HUB.chapterTrail, lang)}</div>
               <button
                 onClick={() => setPanel(null)}
                 aria-label="close"
-                className="text-white/40 hover:text-white text-base leading-none px-1"
+                className="text-white/40 hover:text-white text-base leading-none px-1.5 py-0.5 rounded hover:bg-white/10 transition-colors"
               >
                 ✕
               </button>
             </div>
-            <div className="text-[10px] tracking-[0.3em] text-white/40">
-              {universe === "mars" ? `🔴 ${t(UI.mars, lang)}` : `⚪ ${t(UI.moon, lang)}`}
+            <div className="text-[10px] tracking-[0.25em] text-[#00f0ff] font-mono mt-1">
+              {universe === 'mars' ? `🔴 ${t(UI.mars, lang)} DIRECTORY` : `⚪ ${t(UI.moon, lang)} DIRECTORY`}
             </div>
-            <div className="mt-5 space-y-3">
+            <div className="mt-4 space-y-2.5">
               {chapters.map((c, i) => {
                 const done = c.id === "ch1" && flags.includes("pathfinder");
                 return (
@@ -759,33 +852,35 @@ function HubUI() {
       {/* how-to-play modal */}
       {panel === "howto" && (
         <div
-          className="absolute inset-0 z-40 flex items-center justify-center bg-black/50 backdrop-blur-sm pointer-events-auto p-4"
+          className="absolute inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-md pointer-events-auto p-4"
           onClick={() => setPanel(null)}
         >
           <div
-            className="hub-glass w-[min(520px,94vw)] rounded-2xl p-7 animate-[hubrise_0.45s_ease]"
+            className="hub-console-panel w-[min(520px,94vw)] p-7 animate-[hubrise_0.45s_ease]"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="text-[10px] tracking-[0.5em] text-[#00f0ff] mb-1">🤖 NOVA GUIDE</div>
-            <div className="font-display text-xl tracking-[0.15em] text-[#f3ede0]">
-              {t(HUB.howToPlay, lang)}
+            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+              <div className="text-[10px] tracking-[0.4em] text-[#00f0ff] font-mono">🤖 NOVA MISSION GUIDE</div>
+              <button
+                onClick={() => setPanel(null)}
+                className="text-white/40 hover:text-white text-base leading-none px-2 py-0.5 rounded hover:bg-white/10"
+              >
+                ✕
+              </button>
             </div>
+            <div className="font-display text-xl tracking-[0.15em] text-[#f3ede0]">{t(HUB.howToPlay, lang)}</div>
             <div className="mt-5 space-y-4">
               {HOWTO.map((s) => (
-                <div key={s.title.en} className="flex gap-4 items-start">
+                <div key={s.title.en} className="flex gap-4 items-start p-3 rounded-xl bg-white/[0.03] border border-white/5">
                   <div className="text-2xl leading-none mt-0.5">{s.icon}</div>
                   <div>
-                    <div className="text-sm tracking-[0.1em] text-[#ffd97d]">
-                      {t(s.title, lang)}
-                    </div>
-                    <div className="text-[12px] text-white/60 leading-relaxed mt-1">
-                      {t(s.body, lang)}
-                    </div>
+                    <div className="text-sm tracking-[0.1em] text-[#ffd97d] font-display">{t(s.title, lang)}</div>
+                    <div className="text-[12px] text-white/70 leading-relaxed mt-1 font-sans">{t(s.body, lang)}</div>
                   </div>
                 </div>
               ))}
             </div>
-            <button onClick={() => setPanel(null)} className="hub-btn-gold mt-6 w-full">
+            <button onClick={() => setPanel(null)} className="hub-btn-gold mt-6 w-full cursor-pointer">
               {t(HUB.close, lang)}
             </button>
           </div>
@@ -795,22 +890,18 @@ function HubUI() {
       {/* reset confirmation */}
       {panel === "reset" && (
         <div
-          className="absolute inset-0 z-40 flex items-center justify-center bg-black/50 backdrop-blur-sm pointer-events-auto p-4"
+          className="absolute inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-md pointer-events-auto p-4"
           onClick={() => setPanel(null)}
         >
           <div
-            className="hub-glass w-[min(380px,92vw)] rounded-2xl p-7 text-center animate-[hubrise_0.45s_ease] border-[#e0603f]/40"
+            className="hub-console-panel w-[min(400px,92vw)] p-7 text-center animate-[hubrise_0.45s_ease] border-[#e0603f]/50"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="text-3xl mb-3">⚠️</div>
-            <div className="font-display text-base tracking-[0.12em] text-[#f3ede0]">
-              {t(HUB.resetConfirm, lang)}
-            </div>
-            <div className="text-[12px] text-white/55 leading-relaxed mt-2">
-              {t(HUB.resetWarn, lang)}
-            </div>
+            <div className="font-display text-base tracking-[0.12em] text-[#f3ede0]">{t(HUB.resetConfirm, lang)}</div>
+            <div className="text-[12px] text-white/60 leading-relaxed mt-2">{t(HUB.resetWarn, lang)}</div>
             <div className="flex gap-3 mt-6">
-              <button onClick={() => setPanel(null)} className="hub-btn-ghost flex-1">
+              <button onClick={() => setPanel(null)} className="hub-btn-ghost flex-1 cursor-pointer">
                 {t(HUB.no, lang)}
               </button>
               <button
@@ -820,7 +911,7 @@ function HubUI() {
                   setPanel(null);
                   showToast(t(HUB.resetDone, lang));
                 }}
-                className="hub-btn-danger flex-1"
+                className="hub-btn-danger flex-1 cursor-pointer"
               >
                 {t(HUB.yes, lang)}
               </button>
