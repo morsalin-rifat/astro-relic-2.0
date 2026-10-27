@@ -1,18 +1,10 @@
-import { useSyncExternalStore } from 'react';
+import { useSyncExternalStore } from "react";
 
-export type Lang = 'en' | 'bn';
+export type Lang = "en" | "bn";
 export type Phase =
-  | 'home'
-  | 'hub'
-  | 'solar'
-  | 'cinematic'
-  | 'explore'
-  | 'story'
-  | 'inspect'
-  | 'complete'
-  | 'map';
+  "home" | "hub" | "solar" | "cinematic" | "explore" | "story" | "inspect" | "complete" | "map";
 
-export type Speaker = 'nova' | 'sojourner' | 'narrator';
+export type Speaker = "nova" | "sojourner" | "narrator";
 
 export interface DialogueLine {
   speaker: Speaker;
@@ -29,7 +21,7 @@ export interface Choice {
 
 interface GameState {
   phase: Phase;
-  universe: 'mars' | 'moon';
+  universe: "mars" | "moon";
   lang: Lang;
   muted: boolean;
   // dialogue
@@ -60,7 +52,7 @@ interface GameState {
 
 const persisted = (() => {
   try {
-    return JSON.parse(localStorage.getItem('astro-relic') || '{}');
+    return JSON.parse(localStorage.getItem("astro-relic") || "{}");
   } catch {
     return {};
   }
@@ -68,9 +60,9 @@ const persisted = (() => {
 
 class Store {
   state: GameState = {
-    phase: 'home',
-    universe: 'mars',
-    lang: persisted.lang === 'bn' ? 'bn' : 'en',
+    phase: "home",
+    universe: "mars",
+    lang: persisted.lang === "bn" ? "bn" : "en",
     muted: false,
     queue: [],
     current: null,
@@ -107,15 +99,15 @@ class Store {
 
   set(partial: Partial<GameState>) {
     this.state = { ...this.state, ...partial };
-    if ('flags' in partial || 'lang' in partial || 'tutorialDone' in partial) {
+    if ("flags" in partial || "lang" in partial || "tutorialDone" in partial) {
       try {
         localStorage.setItem(
-          'astro-relic',
+          "astro-relic",
           JSON.stringify({
             flags: this.state.flags,
             lang: this.state.lang,
             tutorialDone: this.state.tutorialDone,
-          })
+          }),
         );
       } catch {
         /* ignore */
@@ -161,6 +153,6 @@ export function useGame<T>(selector: (s: GameState) => T): T {
 }
 
 export function t(pair: { en: string; bn: string } | null, lang: Lang): string {
-  if (!pair) return '';
-  return lang === 'bn' ? pair.bn : pair.en;
+  if (!pair) return "";
+  return lang === "bn" ? pair.bn : pair.en;
 }

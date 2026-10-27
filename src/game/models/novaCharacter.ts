@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 
 export interface NovaCharacter {
   group: THREE.Group;
@@ -9,7 +9,7 @@ export interface NovaCharacter {
   armR: THREE.Group;
   hologram: THREE.Group;
   update: (dt: number, t: number) => void;
-  setMood: (mood: 'happy' | 'curious' | 'waving' | 'excited') => void;
+  setMood: (mood: "happy" | "curious" | "waving" | "excited") => void;
 }
 
 /**
@@ -20,17 +20,17 @@ export interface NovaCharacter {
  */
 export function buildCartoonNova(): NovaCharacter {
   const root = new THREE.Group();
-  root.name = 'NovaPlaceholder';
+  root.name = "NovaPlaceholder";
   root.visible = false; // Hidden from 3D viewport
 
   const dummySprite = new THREE.Sprite(
-    new THREE.SpriteMaterial({ visible: false, transparent: true, opacity: 0 })
+    new THREE.SpriteMaterial({ visible: false, transparent: true, opacity: 0 }),
   );
   root.add(dummySprite);
 
   const dummyMesh = new THREE.Mesh(
     new THREE.BufferGeometry(),
-    new THREE.MeshBasicMaterial({ visible: false })
+    new THREE.MeshBasicMaterial({ visible: false }),
   );
   root.add(dummyMesh);
 

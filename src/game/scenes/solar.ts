@@ -1,17 +1,17 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { store } from '../../state/store';
-import { audio } from '../audio';
-import { makeStarfield, makeGlowTexture, makeTextSprite, type Scene } from '../utils';
-import { buildNova, buildExplorer } from '../models/builders';
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { store } from "../../state/store";
+import { audio } from "../audio";
+import { makeStarfield, makeGlowTexture, makeTextSprite, type Scene } from "../utils";
+import { buildNova, buildExplorer } from "../models/builders";
 import {
   NOVA_INTRO,
   NOVA_AFTER_MOVE,
   NOVA_AFTER_ROTATE,
   NOVA_POINT_MARS,
   NOVA_TWO_WORLDS,
-} from '../../data/content';
-import { SOLAR_BODIES } from '../../data/solarData';
+} from "../../data/content";
+import { SOLAR_BODIES } from "../../data/solarData";
 import {
   createSunTexture,
   createMercuryTexture,
@@ -25,7 +25,7 @@ import {
   createSaturnRingTexture,
   createUranusTexture,
   createNeptuneTexture,
-} from '../solarTextures';
+} from "../solarTextures";
 
 interface PlanetRuntime {
   id: string;
@@ -42,7 +42,7 @@ interface PlanetRuntime {
   radius: number;
 }
 
-type TutStep = 'move' | 'rotate' | 'zoom' | 'mars' | 'done';
+type TutStep = "move" | "rotate" | "zoom" | "mars" | "done";
 
 export class SolarScene implements Scene {
   private renderer: THREE.WebGLRenderer;
@@ -69,7 +69,7 @@ export class SolarScene implements Scene {
   private nova = buildNova();
   private explorer = buildExplorer();
 
-  private step: TutStep = store.get().tutorialDone ? 'done' : 'move';
+  private step: TutStep = store.get().tutorialDone ? "done" : "move";
   private isMap = false;
   private moved = false;
   private rotated = false;
@@ -88,7 +88,7 @@ export class SolarScene implements Scene {
   constructor(renderer: THREE.WebGLRenderer, isMap = false) {
     this.renderer = renderer;
     if (isMap) {
-      this.step = 'done';
+      this.step = "done";
       this.isMap = true;
     }
 
@@ -115,34 +115,34 @@ export class SolarScene implements Scene {
     this.controls.enablePan = false;
     this.controls.maxPolarAngle = Math.PI / 1.85;
 
-    audio.play('space');
+    audio.play("space");
 
-    if (this.step === 'move') {
+    if (this.step === "move") {
       this.later(() => {
         if (!this.moved) store.say(NOVA_INTRO);
       }, 700);
     }
 
     this.disposers.push(
-      store.on('skipTutorial', () => {
-        if (this.step === 'done') return;
-        this.step = 'done';
+      store.on("skipTutorial", () => {
+        if (this.step === "done") return;
+        this.step = "done";
         store.set({ tutorialDone: true, showChoice: true });
         store.say(NOVA_TWO_WORLDS);
-      })
+      }),
     );
 
     // Store event listeners for world selection
     this.disposers.push(
-      store.on('solar:selectPlanet', (id) => {
+      store.on("solar:selectPlanet", (id) => {
         this.focusOnWorld((id as string) || null);
-      })
+      }),
     );
 
     this.disposers.push(
-      store.on('solar:resetView', () => {
+      store.on("solar:resetView", () => {
         this.focusOnWorld(null);
-      })
+      }),
     );
   }
 
@@ -153,18 +153,18 @@ export class SolarScene implements Scene {
 
     // Deep cosmic nebulae sprites in distant space
     const nebulae = [
-      { col: 'rgba(50, 20, 100, 0.3)', pos: [-500, 200, -700], s: 800 },
-      { col: 'rgba(20, 60, 120, 0.3)', pos: [600, -150, -600], s: 900 },
-      { col: 'rgba(90, 40, 40, 0.22)', pos: [0, 400, 800], s: 750 },
+      { col: "rgba(50, 20, 100, 0.3)", pos: [-500, 200, -700], s: 800 },
+      { col: "rgba(20, 60, 120, 0.3)", pos: [600, -150, -600], s: 900 },
+      { col: "rgba(90, 40, 40, 0.22)", pos: [0, 400, 800], s: 750 },
     ];
     nebulae.forEach(({ col, pos, s }) => {
       const sprite = new THREE.Sprite(
         new THREE.SpriteMaterial({
-          map: makeGlowTexture(col, 'rgba(0,0,0,0)'),
+          map: makeGlowTexture(col, "rgba(0,0,0,0)"),
           transparent: true,
           depthWrite: false,
           blending: THREE.AdditiveBlending,
-        })
+        }),
       );
       sprite.position.set(pos[0] ?? 0, pos[1] ?? 0, pos[2] ?? 0);
       sprite.scale.set(s, s, 1);
@@ -173,7 +173,7 @@ export class SolarScene implements Scene {
   }
 
   private setupSun() {
-    const sunData = SOLAR_BODIES.find((b) => b.id === 'Sun')!;
+    const sunData = SOLAR_BODIES.find((b) => b.id === "Sun")!;
 
     // 1. Core Sphere with High-Detail Convection Texture
     const sunGeo = new THREE.SphereGeometry(sunData.radius3d, 64, 48);
@@ -183,7 +183,7 @@ export class SolarScene implements Scene {
       color: 0xfffae8,
     });
     this.sunMesh = new THREE.Mesh(sunGeo, sunMat);
-    this.sunMesh.name = 'Sun';
+    this.sunMesh.name = "Sun";
     this.scene.add(this.sunMesh);
 
     // 2. Solar Chromosphere Glow Layer (Atmosphere rim)
@@ -201,11 +201,11 @@ export class SolarScene implements Scene {
     // 3. Inner Blazing Coronal Flares
     this.sunCoronaSprite = new THREE.Sprite(
       new THREE.SpriteMaterial({
-        map: makeGlowTexture('rgba(255, 240, 180, 0.95)', 'rgba(255, 110, 10, 0)'),
+        map: makeGlowTexture("rgba(255, 240, 180, 0.95)", "rgba(255, 110, 10, 0)"),
         transparent: true,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
-      })
+      }),
     );
     this.sunCoronaSprite.scale.set(18, 18, 1);
     this.scene.add(this.sunCoronaSprite);
@@ -213,18 +213,24 @@ export class SolarScene implements Scene {
     // 4. Outer Radiant Solar Halo
     this.sunCoronaOuter = new THREE.Sprite(
       new THREE.SpriteMaterial({
-        map: makeGlowTexture('rgba(255, 150, 40, 0.55)', 'rgba(255, 60, 0, 0)'),
+        map: makeGlowTexture("rgba(255, 150, 40, 0.55)", "rgba(255, 60, 0, 0)"),
         transparent: true,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
-      })
+      }),
     );
     this.sunCoronaOuter.scale.set(34, 34, 1);
     this.scene.add(this.sunCoronaOuter);
 
     // 5. Dynamic Solar Prominences / Flares erupting from the Sun
     for (let i = 0; i < 6; i++) {
-      const flareGeo = new THREE.TorusGeometry(sunData.radius3d * 1.02, 0.12, 8, 24, Math.PI * 0.45);
+      const flareGeo = new THREE.TorusGeometry(
+        sunData.radius3d * 1.02,
+        0.12,
+        8,
+        24,
+        Math.PI * 0.45,
+      );
       const flareMat = new THREE.MeshBasicMaterial({
         color: 0xff9922,
         transparent: true,
@@ -249,12 +255,12 @@ export class SolarScene implements Scene {
   }
 
   private setupPlanets() {
-    SOLAR_BODIES.filter((b) => b.id !== 'Sun' && b.id !== 'Moon').forEach((b, i) => {
+    SOLAR_BODIES.filter((b) => b.id !== "Sun" && b.id !== "Moon").forEach((b, i) => {
       const group = new THREE.Group();
 
       // Subtle, elegant orbital ring trace
       const orbitGeo = new THREE.RingGeometry(b.orbitRadius3d - 0.04, b.orbitRadius3d + 0.04, 160);
-      const isTarget = b.id === 'Mars';
+      const isTarget = b.id === "Mars";
       const orbitMat = new THREE.MeshBasicMaterial({
         color: isTarget ? 0xff5533 : 0x485878,
         side: THREE.DoubleSide,
@@ -272,37 +278,37 @@ export class SolarScene implements Scene {
       let metalness = 0.05;
 
       switch (b.id) {
-        case 'Mercury':
+        case "Mercury":
           planetTex = createMercuryTexture();
           roughness = 0.95;
           break;
-        case 'Venus':
+        case "Venus":
           planetTex = createVenusTexture();
           roughness = 0.6;
           metalness = 0.15;
           break;
-        case 'Earth':
+        case "Earth":
           planetTex = createEarthTexture();
           roughness = 0.45;
           metalness = 0.1;
           break;
-        case 'Mars':
+        case "Mars":
           planetTex = createMarsTexture();
           roughness = 0.85;
           break;
-        case 'Jupiter':
+        case "Jupiter":
           planetTex = createJupiterTexture();
           roughness = 0.75;
           break;
-        case 'Saturn':
+        case "Saturn":
           planetTex = createSaturnTexture();
           roughness = 0.8;
           break;
-        case 'Uranus':
+        case "Uranus":
           planetTex = createUranusTexture();
           roughness = 0.65;
           break;
-        case 'Neptune':
+        case "Neptune":
           planetTex = createNeptuneTexture();
           roughness = 0.65;
           break;
@@ -325,10 +331,10 @@ export class SolarScene implements Scene {
       mesh.position.set(Math.cos(angle) * b.orbitRadius3d, 0, Math.sin(angle) * b.orbitRadius3d);
 
       // Axial tilts
-      if (b.id === 'Earth') mesh.rotation.z = 0.41;
-      if (b.id === 'Mars') mesh.rotation.z = 0.44;
-      if (b.id === 'Saturn') mesh.rotation.z = 0.47;
-      if (b.id === 'Uranus') mesh.rotation.z = 1.7;
+      if (b.id === "Earth") mesh.rotation.z = 0.41;
+      if (b.id === "Mars") mesh.rotation.z = 0.44;
+      if (b.id === "Saturn") mesh.rotation.z = 0.47;
+      if (b.id === "Uranus") mesh.rotation.z = 1.7;
 
       group.add(mesh);
 
@@ -337,7 +343,7 @@ export class SolarScene implements Scene {
       let ringsMesh: THREE.Mesh | undefined;
 
       // EARTH: Clouds & Moon
-      if (b.id === 'Earth') {
+      if (b.id === "Earth") {
         const cloudGeo = new THREE.SphereGeometry(b.radius3d * 1.022, 36, 28);
         const cloudTex = createEarthCloudsTexture();
         const cloudMat = new THREE.MeshStandardMaterial({
@@ -353,11 +359,11 @@ export class SolarScene implements Scene {
         // Blue atmosphere Fresnel glow
         const atmoSprite = new THREE.Sprite(
           new THREE.SpriteMaterial({
-            map: makeGlowTexture('rgba(80, 165, 255, 0.65)', 'rgba(0, 80, 255, 0)'),
+            map: makeGlowTexture("rgba(80, 165, 255, 0.65)", "rgba(0, 80, 255, 0)"),
             transparent: true,
             depthWrite: false,
             blending: THREE.AdditiveBlending,
-          })
+          }),
         );
         atmoSprite.scale.set(b.radius3d * 2.5, b.radius3d * 2.5, 1);
         mesh.add(atmoSprite);
@@ -367,26 +373,26 @@ export class SolarScene implements Scene {
         const moonGeo = new THREE.SphereGeometry(0.35, 24, 20);
         const moonMat = new THREE.MeshStandardMaterial({ map: moonTex, roughness: 0.95 });
         const moonMesh = new THREE.Mesh(moonGeo, moonMat);
-        moonMesh.name = 'Moon';
+        moonMesh.name = "Moon";
         moonMesh.position.set(2.5, 0, 0);
         mesh.add(moonMesh);
 
         // Subtle Moon tag
-        const moonLabel = makeTextSprite('🌙 MOON', { size: 0.5, color: '#e5e2db' });
+        const moonLabel = makeTextSprite("🌙 MOON", { size: 0.5, color: "#e5e2db" });
         moonLabel.position.set(2.5, 0.75, 0);
         mesh.add(moonLabel);
       }
 
       // MARS (Primary Destination 1)
-      if (b.id === 'Mars') {
+      if (b.id === "Mars") {
         // Orange atmospheric limb glow
         const marsGlow = new THREE.Sprite(
           new THREE.SpriteMaterial({
-            map: makeGlowTexture('rgba(255, 100, 50, 0.55)', 'rgba(180, 40, 10, 0)'),
+            map: makeGlowTexture("rgba(255, 100, 50, 0.55)", "rgba(180, 40, 10, 0)"),
             transparent: true,
             depthWrite: false,
             blending: THREE.AdditiveBlending,
-          })
+          }),
         );
         marsGlow.scale.set(b.radius3d * 2.35, b.radius3d * 2.35, 1);
         mesh.add(marsGlow);
@@ -400,7 +406,7 @@ export class SolarScene implements Scene {
             side: THREE.DoubleSide,
             transparent: true,
             opacity: 0.85,
-          })
+          }),
         );
         beaconRing.rotation.x = Math.PI / 2;
         this.marsBeacon.add(beaconRing);
@@ -420,7 +426,7 @@ export class SolarScene implements Scene {
       }
 
       // SATURN: Realistic Ring System
-      if (b.id === 'Saturn') {
+      if (b.id === "Saturn") {
         const ringGeo = new THREE.RingGeometry(b.radius3d * 1.35, b.radius3d * 2.45, 80);
         const ringTex = createSaturnRingTexture();
         const ringMat = new THREE.MeshStandardMaterial({
@@ -436,7 +442,7 @@ export class SolarScene implements Scene {
       }
 
       // URANUS: Faint Ice Ring
-      if (b.id === 'Uranus') {
+      if (b.id === "Uranus") {
         const uRingGeo = new THREE.RingGeometry(b.radius3d * 1.3, b.radius3d * 1.65, 60);
         const uRingMat = new THREE.MeshBasicMaterial({
           color: 0xc4eef2,
@@ -450,17 +456,17 @@ export class SolarScene implements Scene {
       }
 
       // JUPITER: Galilean Moons
-      if (b.id === 'Jupiter') {
+      if (b.id === "Jupiter") {
         const jMoons = [
-          { name: 'Io', dist: 3.4, size: 0.2, col: 0xe5bf42 },
-          { name: 'Europa', dist: 4.2, size: 0.18, col: 0xc8c3b8 },
-          { name: 'Ganymede', dist: 5.2, size: 0.28, col: 0x9e988f },
-          { name: 'Callisto', dist: 6.4, size: 0.25, col: 0x767068 },
+          { name: "Io", dist: 3.4, size: 0.2, col: 0xe5bf42 },
+          { name: "Europa", dist: 4.2, size: 0.18, col: 0xc8c3b8 },
+          { name: "Ganymede", dist: 5.2, size: 0.28, col: 0x9e988f },
+          { name: "Callisto", dist: 6.4, size: 0.25, col: 0x767068 },
         ];
         jMoons.forEach((jm, jIdx) => {
           const jmM = new THREE.Mesh(
             new THREE.SphereGeometry(jm.size, 14, 12),
-            new THREE.MeshStandardMaterial({ color: jm.col, roughness: 0.85 })
+            new THREE.MeshStandardMaterial({ color: jm.col, roughness: 0.85 }),
           );
           jmM.name = jm.name;
           const a = jIdx * 1.4;
@@ -471,12 +477,12 @@ export class SolarScene implements Scene {
 
       // ONLY add prominent destination tags for Mars and Earth (clean game design, no clutter)
       let label: THREE.Sprite | undefined;
-      if (b.id === 'Mars') {
-        label = makeTextSprite('🔴 MARS', { size: 0.8, color: '#ff9d6b' });
+      if (b.id === "Mars") {
+        label = makeTextSprite("🔴 MARS", { size: 0.8, color: "#ff9d6b" });
         label.position.copy(mesh.position).add(new THREE.Vector3(0, b.radius3d + 1.4, 0));
         group.add(label);
-      } else if (b.id === 'Earth') {
-        label = makeTextSprite('🌍 EARTH', { size: 0.65, color: '#9fd8ff' });
+      } else if (b.id === "Earth") {
+        label = makeTextSprite("🌍 EARTH", { size: 0.65, color: "#9fd8ff" });
         label.position.copy(mesh.position).add(new THREE.Vector3(0, b.radius3d + 1.2, 0));
         group.add(label);
       }
@@ -521,8 +527,8 @@ export class SolarScene implements Scene {
       col[i * 3 + 2] = shade * 0.95;
     }
 
-    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
 
     const mat = new THREE.PointsMaterial({
       size: 2.2,
@@ -597,7 +603,7 @@ export class SolarScene implements Scene {
     this.currentTargetPlanet = worldId;
     store.set({ selectedPlanet: worldId });
 
-    if (!worldId || worldId === 'overview') {
+    if (!worldId || worldId === "overview") {
       // Return to heliocentric overview
       this.isFocusing = false;
       this.cameraTargetPos.copy(this.defaultTarget);
@@ -610,8 +616,8 @@ export class SolarScene implements Scene {
       return;
     }
 
-    if (worldId === 'Mars') {
-      const mars = this.planets.find((p) => p.id === 'Mars');
+    if (worldId === "Mars") {
+      const mars = this.planets.find((p) => p.id === "Mars");
       if (!mars) return;
 
       this.isFocusing = true;
@@ -636,11 +642,11 @@ export class SolarScene implements Scene {
       return;
     }
 
-    if (worldId === 'Moon') {
-      const earth = this.planets.find((p) => p.id === 'Earth');
+    if (worldId === "Moon") {
+      const earth = this.planets.find((p) => p.id === "Earth");
       if (!earth) return;
 
-      const moon = earth.mesh.children.find((c: THREE.Object3D) => c.name === 'Moon');
+      const moon = earth.mesh.children.find((c: THREE.Object3D) => c.name === "Moon");
       if (!moon) return;
 
       this.isFocusing = true;
@@ -661,23 +667,23 @@ export class SolarScene implements Scene {
   }
 
   private progress() {
-    if (this.step === 'move' && !this.moved) {
+    if (this.step === "move" && !this.moved) {
       this.moved = true;
       this.later(() => {
         store.say(NOVA_AFTER_MOVE);
-        this.step = 'rotate';
+        this.step = "rotate";
       }, 400);
-    } else if (this.step === 'rotate' && !this.rotated) {
+    } else if (this.step === "rotate" && !this.rotated) {
       this.rotated = true;
       this.later(() => {
         store.say(NOVA_AFTER_ROTATE);
-        this.step = 'zoom';
+        this.step = "zoom";
       }, 500);
-    } else if (this.step === 'zoom' && !this.zoomed) {
+    } else if (this.step === "zoom" && !this.zoomed) {
       this.zoomed = true;
       this.later(() => {
         store.say(NOVA_POINT_MARS);
-        this.step = 'mars';
+        this.step = "mars";
       }, 500);
     }
   }
@@ -701,9 +707,10 @@ export class SolarScene implements Scene {
     this.raycaster.setFromCamera(new THREE.Vector2(x, y), this.camera);
 
     // In ASTRO RELIC game design: Only MARS and MOON are primary destination click targets!
-    const mars = this.planets.find((p) => p.id === 'Mars');
-    const earth = this.planets.find((p) => p.id === 'Earth');
-    const moon = earth?.mesh.children.find((c: THREE.Object3D) => c.name === 'Moon') as THREE.Mesh | undefined;
+    const mars = this.planets.find((p) => p.id === "Mars");
+    const earth = this.planets.find((p) => p.id === "Earth");
+    const moon = earth?.mesh.children.find((c: THREE.Object3D) => c.name === "Moon") as
+      THREE.Mesh | undefined;
 
     const clickableTargets: THREE.Object3D[] = [];
     if (mars) clickableTargets.push(mars.mesh);
@@ -712,16 +719,16 @@ export class SolarScene implements Scene {
     const hits = this.raycaster.intersectObjects(clickableTargets, true);
 
     if (hits.length === 0) {
-      if (this.step !== 'mars' && this.step !== 'done') {
+      if (this.step !== "mars" && this.step !== "done") {
         this.progress();
       }
       return;
     }
 
     let obj: THREE.Object3D | null = hits[0]!.object;
-    let name = '';
+    let name = "";
     while (obj) {
-      if (obj.name === 'Mars' || obj.name === 'Moon') {
+      if (obj.name === "Mars" || obj.name === "Moon") {
         name = obj.name;
         break;
       }
@@ -732,9 +739,9 @@ export class SolarScene implements Scene {
     // Focus camera on clicked destination world
     this.focusOnWorld(name);
 
-    if (this.step === 'mars') {
-      if (name === 'Mars' || name === 'Moon') {
-        this.step = 'done';
+    if (this.step === "mars") {
+      if (name === "Mars" || name === "Moon") {
+        this.step = "done";
         store.set({ tutorialDone: true });
         store.say(NOVA_TWO_WORLDS);
         this.later(() => store.set({ showChoice: true }), 800);
@@ -742,8 +749,8 @@ export class SolarScene implements Scene {
       return;
     }
 
-    if (this.step === 'done') {
-      if (name === 'Mars' || name === 'Moon') {
+    if (this.step === "done") {
+      if (name === "Mars" || name === "Moon") {
         store.say(NOVA_TWO_WORLDS);
         this.later(() => store.set({ showChoice: true }), 500);
       }
@@ -765,7 +772,11 @@ export class SolarScene implements Scene {
 
     const sunPulse = 1 + Math.sin(t * 2.5) * 0.04;
     this.sunCoronaSprite.scale.set(18 * sunPulse, 18 * sunPulse, 1);
-    this.sunCoronaOuter.scale.set(34 * (1 + Math.cos(t * 1.8) * 0.05), 34 * (1 + Math.cos(t * 1.8) * 0.05), 1);
+    this.sunCoronaOuter.scale.set(
+      34 * (1 + Math.cos(t * 1.8) * 0.05),
+      34 * (1 + Math.cos(t * 1.8) * 0.05),
+      1,
+    );
     this.sunCoronaOuter.material.rotation = t * 0.015;
 
     // Rotate solar prominence flare arcs
@@ -791,11 +802,15 @@ export class SolarScene implements Scene {
     });
 
     // 3. Moon orbits Earth
-    const earth = this.planets.find((p) => p.id === 'Earth');
+    const earth = this.planets.find((p) => p.id === "Earth");
     if (earth) {
-      const moon = earth.mesh.children.find((c: THREE.Object3D) => c.name === 'Moon');
+      const moon = earth.mesh.children.find((c: THREE.Object3D) => c.name === "Moon");
       if (moon) {
-        moon.position.set(Math.cos(t * 0.8 * speedMult) * 2.5, 0, Math.sin(t * 0.8 * speedMult) * 2.5);
+        moon.position.set(
+          Math.cos(t * 0.8 * speedMult) * 2.5,
+          0,
+          Math.sin(t * 0.8 * speedMult) * 2.5,
+        );
       }
     }
 
@@ -815,8 +830,8 @@ export class SolarScene implements Scene {
     }
 
     // 6. Dynamic tracking for focused destination target
-    if (this.currentTargetPlanet === 'Mars') {
-      const mars = this.planets.find((p) => p.id === 'Mars');
+    if (this.currentTargetPlanet === "Mars") {
+      const mars = this.planets.find((p) => p.id === "Mars");
       if (mars) {
         const worldPos = new THREE.Vector3();
         mars.mesh.getWorldPosition(worldPos);
@@ -829,9 +844,9 @@ export class SolarScene implements Scene {
           this.explorer.lookAt(worldPos);
         }
       }
-    } else if (this.currentTargetPlanet === 'Moon') {
-      const earthObj = this.planets.find((p) => p.id === 'Earth');
-      const moonObj = earthObj?.mesh.children.find((c: THREE.Object3D) => c.name === 'Moon');
+    } else if (this.currentTargetPlanet === "Moon") {
+      const earthObj = this.planets.find((p) => p.id === "Earth");
+      const moonObj = earthObj?.mesh.children.find((c: THREE.Object3D) => c.name === "Moon");
       if (moonObj) {
         const worldPos = new THREE.Vector3();
         moonObj.getWorldPosition(worldPos);

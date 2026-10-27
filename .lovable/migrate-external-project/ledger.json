@@ -1,76 +1,76 @@
 {
- "source": "github",
- "source_url": "https://github.com/morsalin-rifat/astro-relic.git",
- "ledger": [
-  {
-   "capability": "code",
-   "source": "github repo (Vite + React 19 SPA, Three.js 3D game)",
-   "outcome": "migrate",
-   "status": "migrate",
-   "next_action": "Rebuild in TanStack Start at / with client-only game mount"
-  },
-  {
-   "capability": "schema",
-   "source": "none detected (no database, no ORM)",
-   "outcome": "n/a",
-   "status": "verified",
-   "next_action": ""
-  },
-  {
-   "capability": "records",
-   "source": "none detected",
-   "outcome": "n/a",
-   "status": "verified",
-   "next_action": ""
-  },
-  {
-   "capability": "auth",
-   "source": "none detected",
-   "outcome": "n/a",
-   "status": "verified",
-   "next_action": ""
-  },
-  {
-   "capability": "client persistence",
-   "source": "localStorage key 'astro-relic' (flags, lang, tutorialDone)",
-   "outcome": "preserve",
-   "status": "verified",
-   "next_action": ""
-  },
-  {
-   "capability": "external providers",
-   "source": "metadata.json lists Gemini capability but no code call sites; no env vars used",
-   "outcome": "none",
-   "status": "verified",
-   "next_action": ""
-  },
-  {
-   "capability": "public endpoints",
-   "source": "none",
-   "outcome": "n/a",
-   "status": "verified",
-   "next_action": ""
-  },
-  {
-   "capability": "schedules",
-   "source": "none",
-   "outcome": "n/a",
-   "status": "verified",
-   "next_action": ""
-  },
-  {
-   "capability": "cutover",
-   "source": "static SPA, no hosting dependencies",
-   "outcome": "n/a",
-   "status": "verified",
-   "next_action": ""
-  },
-  {
-   "capability": "verification",
-   "source": "preview",
-   "outcome": "pending",
-   "status": "verified",
-   "next_action": "Home renders 3D planet; enter -> solar system; Nova dialogue advances; localStorage persists; no console errors"
-  }
- ]
+  "source": "github",
+  "source_url": "https://github.com/morsalin-rifat/astro-relic.git",
+  "ledger": [
+    {
+      "capability": "code",
+      "source": "github repo (Vite + React 19 SPA, Three.js 3D game)",
+      "outcome": "migrate",
+      "status": "migrate",
+      "next_action": "Rebuild in TanStack Start at / with client-only game mount"
+    },
+    {
+      "capability": "schema",
+      "source": "none detected (no database, no ORM)",
+      "outcome": "n/a",
+      "status": "verified",
+      "next_action": ""
+    },
+    {
+      "capability": "records",
+      "source": "none detected",
+      "outcome": "n/a",
+      "status": "verified",
+      "next_action": ""
+    },
+    {
+      "capability": "auth",
+      "source": "none detected",
+      "outcome": "n/a",
+      "status": "verified",
+      "next_action": ""
+    },
+    {
+      "capability": "client persistence",
+      "source": "localStorage key 'astro-relic' (flags, lang, tutorialDone)",
+      "outcome": "preserve",
+      "status": "verified",
+      "next_action": ""
+    },
+    {
+      "capability": "external providers",
+      "source": "metadata.json lists Gemini capability but no code call sites; no env vars used",
+      "outcome": "none",
+      "status": "verified",
+      "next_action": ""
+    },
+    {
+      "capability": "public endpoints",
+      "source": "none",
+      "outcome": "n/a",
+      "status": "verified",
+      "next_action": ""
+    },
+    {
+      "capability": "schedules",
+      "source": "none",
+      "outcome": "n/a",
+      "status": "verified",
+      "next_action": ""
+    },
+    {
+      "capability": "cutover",
+      "source": "static SPA, no hosting dependencies",
+      "outcome": "n/a",
+      "status": "verified",
+      "next_action": ""
+    },
+    {
+      "capability": "verification",
+      "source": "preview",
+      "outcome": "pending",
+      "status": "verified",
+      "next_action": "Home renders 3D planet; enter -> solar system; Nova dialogue advances; localStorage persists; no console errors"
+    }
+  ]
 }

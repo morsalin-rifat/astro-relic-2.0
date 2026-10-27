@@ -1,7 +1,7 @@
 // @ts-nocheck — strict index-access checks are noisy for this array-heavy particle scene.
-import * as THREE from 'three';
-import { makeGlowTexture, makeCanvasTexture, fbm, type Scene } from '../utils';
-import { buildNova } from '../models/builders';
+import * as THREE from "three";
+import { makeGlowTexture, makeCanvasTexture, fbm, type Scene } from "../utils";
+import { buildNova } from "../models/builders";
 
 const MOUSE_RADIUS = 0.42; // NDC units
 const NEAR_COUNT = 130;
@@ -87,16 +87,16 @@ export class HomeScene implements Scene {
       const c = new THREE.Color().setHSL(
         warm < 0.7 ? 0.6 : warm < 0.9 ? 0.09 : 0.5,
         0.3,
-        0.7 + Math.random() * 0.3
+        0.7 + Math.random() * 0.3,
       );
       farCol[i * 3] = c.r;
       farCol[i * 3 + 1] = c.g;
       farCol[i * 3 + 2] = c.b;
     }
-    this.farGeo.setAttribute('position', new THREE.BufferAttribute(farPos, 3));
-    this.farGeo.setAttribute('aSize', new THREE.BufferAttribute(farSize, 1));
-    this.farGeo.setAttribute('aPhase', new THREE.BufferAttribute(farPhase, 1));
-    this.farGeo.setAttribute('aColor', new THREE.BufferAttribute(farCol, 3));
+    this.farGeo.setAttribute("position", new THREE.BufferAttribute(farPos, 3));
+    this.farGeo.setAttribute("aSize", new THREE.BufferAttribute(farSize, 1));
+    this.farGeo.setAttribute("aPhase", new THREE.BufferAttribute(farPhase, 1));
+    this.farGeo.setAttribute("aColor", new THREE.BufferAttribute(farCol, 3));
     this.farMat = new THREE.ShaderMaterial({
       uniforms: { uTime: { value: 0 } },
       vertexShader: `
@@ -150,15 +150,15 @@ export class HomeScene implements Scene {
       const c = new THREE.Color().setHSL(
         kind < 0.55 ? 0.12 : kind < 0.8 ? 0.55 : 0.6,
         kind < 0.55 ? 0.75 : 0.55,
-        0.82
+        0.82,
       );
       this.nearBase[i3] = c.r;
       this.nearBase[i3 + 1] = c.g;
       this.nearBase[i3 + 2] = c.b;
     }
-    this.nearGeo.setAttribute('position', new THREE.BufferAttribute(this.nearPos, 3));
-    this.nearGeo.setAttribute('aColor', new THREE.BufferAttribute(this.nearCol, 3));
-    this.nearGeo.setAttribute('aSize', new THREE.BufferAttribute(nearSize, 1));
+    this.nearGeo.setAttribute("position", new THREE.BufferAttribute(this.nearPos, 3));
+    this.nearGeo.setAttribute("aColor", new THREE.BufferAttribute(this.nearCol, 3));
+    this.nearGeo.setAttribute("aSize", new THREE.BufferAttribute(nearSize, 1));
     this.nearMat = new THREE.ShaderMaterial({
       vertexShader: `
         attribute float aSize;
@@ -200,9 +200,9 @@ export class HomeScene implements Scene {
         maxLife: 0.7 + Math.random() * 0.6,
       });
     }
-    this.dustGeo.setAttribute('position', new THREE.BufferAttribute(this.dustPos, 3));
-    this.dustGeo.setAttribute('aLife', new THREE.BufferAttribute(this.dustLife, 1));
-    this.dustGeo.setAttribute('aSize', new THREE.BufferAttribute(this.dustSize, 1));
+    this.dustGeo.setAttribute("position", new THREE.BufferAttribute(this.dustPos, 3));
+    this.dustGeo.setAttribute("aLife", new THREE.BufferAttribute(this.dustLife, 1));
+    this.dustGeo.setAttribute("aSize", new THREE.BufferAttribute(this.dustSize, 1));
     this.dustMat = new THREE.ShaderMaterial({
       vertexShader: `
         attribute float aLife;
@@ -232,10 +232,10 @@ export class HomeScene implements Scene {
     const shootTex = makeCanvasTexture(256, (ctx, s) => {
       ctx.clearRect(0, 0, s, s);
       const g = ctx.createLinearGradient(0, s / 2, s, s / 2);
-      g.addColorStop(0, 'rgba(255,255,255,0)');
-      g.addColorStop(0.65, 'rgba(190,220,255,0.45)');
-      g.addColorStop(0.9, 'rgba(255,255,255,1)');
-      g.addColorStop(1, 'rgba(255,255,255,0)');
+      g.addColorStop(0, "rgba(255,255,255,0)");
+      g.addColorStop(0.65, "rgba(190,220,255,0.45)");
+      g.addColorStop(0.9, "rgba(255,255,255,1)");
+      g.addColorStop(1, "rgba(255,255,255,0)");
       ctx.fillStyle = g;
       ctx.beginPath();
       ctx.ellipse(s / 2, s / 2, s / 2, s * 0.055, 0, 0, Math.PI * 2);
@@ -278,13 +278,13 @@ export class HomeScene implements Scene {
     });
     this.mars = new THREE.Mesh(
       new THREE.SphereGeometry(1.15, 48, 32),
-      new THREE.MeshStandardMaterial({ map: marsTex, roughness: 0.9, metalness: 0.05 })
+      new THREE.MeshStandardMaterial({ map: marsTex, roughness: 0.9, metalness: 0.05 }),
     );
     this.mars.position.set(4.6, 2.1, -16);
     this.scene.add(this.mars);
     this.disposables.push(marsTex, this.mars.geometry, this.mars.material as THREE.Material);
 
-    const glowTex = makeGlowTexture('rgba(255,130,80,1)', 'rgba(255,70,25,0)');
+    const glowTex = makeGlowTexture("rgba(255,130,80,1)", "rgba(255,70,25,0)");
     this.marsGlow = new THREE.Sprite(
       new THREE.SpriteMaterial({
         map: glowTex,
@@ -292,7 +292,7 @@ export class HomeScene implements Scene {
         opacity: 0.45,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
-      })
+      }),
     );
     this.marsGlow.position.copy(this.mars.position);
     this.marsGlow.scale.set(5.2, 5.2, 1);
@@ -301,9 +301,9 @@ export class HomeScene implements Scene {
 
     // ---------- nebulas ----------
     const nebTints: [string, string][] = [
-      ['rgba(150,110,255,0.5)', 'rgba(70,40,140,0)'],
-      ['rgba(90,200,255,0.45)', 'rgba(30,90,160,0)'],
-      ['rgba(255,120,190,0.4)', 'rgba(140,40,110,0)'],
+      ["rgba(150,110,255,0.5)", "rgba(70,40,140,0)"],
+      ["rgba(90,200,255,0.45)", "rgba(30,90,160,0)"],
+      ["rgba(255,120,190,0.4)", "rgba(140,40,110,0)"],
     ];
     const nebTexes = nebTints.map(([a, b]) => makeGlowTexture(a, b));
     for (let i = 0; i < 6; i++) {
@@ -314,12 +314,12 @@ export class HomeScene implements Scene {
           depthWrite: false,
           blending: THREE.AdditiveBlending,
           opacity: 0.32,
-        })
+        }),
       );
       neb.position.set(
         (Math.random() - 0.5) * 260,
         (Math.random() - 0.5) * 140,
-        -180 - Math.random() * 160
+        -180 - Math.random() * 160,
       );
       const sc = 80 + Math.random() * 130;
       neb.scale.set(sc, sc, 1);
@@ -335,7 +335,7 @@ export class HomeScene implements Scene {
     this.scene.add(new THREE.AmbientLight(0x2a2a55, 1.4));
 
     this.nova.group.position.set(2.6, -2.2, 4.5);
-    this.nova.setMood('waving');
+    this.nova.setMood("waving");
     this.scene.add(this.nova.group);
   }
 
@@ -358,7 +358,11 @@ export class HomeScene implements Scene {
       d.pos.copy(this.v);
       d.pos.x += (Math.random() - 0.5) * 0.6;
       d.pos.y += (Math.random() - 0.5) * 0.6;
-      d.vel.set((Math.random() - 0.5) * 0.9, (Math.random() - 0.5) * 0.9, (Math.random() - 0.5) * 0.3);
+      d.vel.set(
+        (Math.random() - 0.5) * 0.9,
+        (Math.random() - 0.5) * 0.9,
+        (Math.random() - 0.5) * 0.3,
+      );
       d.life = 0;
     }
   }
@@ -391,8 +395,8 @@ export class HomeScene implements Scene {
       pos[i3 + 1] += (this.v.y - pos[i3 + 1]) * k;
       pos[i3 + 2] += (this.v.z - pos[i3 + 2]) * k;
     }
-    (this.nearGeo.getAttribute('position') as THREE.BufferAttribute).needsUpdate = true;
-    (this.nearGeo.getAttribute('aColor') as THREE.BufferAttribute).needsUpdate = true;
+    (this.nearGeo.getAttribute("position") as THREE.BufferAttribute).needsUpdate = true;
+    (this.nearGeo.getAttribute("aColor") as THREE.BufferAttribute).needsUpdate = true;
   }
 
   private updateDust(dt: number) {
@@ -410,8 +414,8 @@ export class HomeScene implements Scene {
       pos[i3 + 2] = d.pos.z;
       this.dustLife[i] = d.life;
     }
-    (this.dustGeo.getAttribute('position') as THREE.BufferAttribute).needsUpdate = true;
-    (this.dustGeo.getAttribute('aLife') as THREE.BufferAttribute).needsUpdate = true;
+    (this.dustGeo.getAttribute("position") as THREE.BufferAttribute).needsUpdate = true;
+    (this.dustGeo.getAttribute("aLife") as THREE.BufferAttribute).needsUpdate = true;
   }
 
   private updateShooting(dt: number) {
@@ -452,7 +456,8 @@ export class HomeScene implements Scene {
 
     // slow cosmic drift of the far field
     this.camera.position.x += (this.mouse.x * 1.1 - this.camera.position.x) * Math.min(1, dt * 2.2);
-    this.camera.position.y += (0.3 + this.mouse.y * 0.6 - this.camera.position.y) * Math.min(1, dt * 2.2);
+    this.camera.position.y +=
+      (0.3 + this.mouse.y * 0.6 - this.camera.position.y) * Math.min(1, dt * 2.2);
     this.camera.lookAt(0, 0, 0);
     this.camera.updateMatrixWorld();
 

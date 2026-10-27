@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 
 // -------------------------------------------------------------
 // NASA Mars Pathfinder Authentic EDL (Entry, Descent, Landing) Models
@@ -58,13 +58,21 @@ export function buildPathfinderCruiseStage(): {
 
   // Parachute Mortar Canister at Apex
   const canisterGeo = new THREE.CylinderGeometry(0.24, 0.24, 0.35, 16);
-  const canMat = new THREE.MeshStandardMaterial({ color: 0x909095, roughness: 0.4, metalness: 0.6 });
+  const canMat = new THREE.MeshStandardMaterial({
+    color: 0x909095,
+    roughness: 0.4,
+    metalness: 0.6,
+  });
   const canister = new THREE.Mesh(canisterGeo, canMat);
   canister.position.y = 0.8;
   backshell.add(canister);
 
   // RAD (Rocket-Assisted Deceleration) Retro-Rocket Nozzles (3 motors inside backshell)
-  const radMat = new THREE.MeshStandardMaterial({ color: 0x222225, roughness: 0.6, metalness: 0.8 });
+  const radMat = new THREE.MeshStandardMaterial({
+    color: 0x222225,
+    roughness: 0.6,
+    metalness: 0.8,
+  });
   for (let i = 0; i < 3; i++) {
     const angle = (i * Math.PI * 2) / 3;
     const nozzle = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.2, 12), radMat);
@@ -85,7 +93,11 @@ export function buildPathfinderCruiseStage(): {
   cruiseStage.add(csRing);
 
   // Solar cells on cruise stage
-  const cellMat = new THREE.MeshStandardMaterial({ color: 0x152345, roughness: 0.2, metalness: 0.8 });
+  const cellMat = new THREE.MeshStandardMaterial({
+    color: 0x152345,
+    roughness: 0.2,
+    metalness: 0.8,
+  });
   for (let c = 0; c < 8; c++) {
     const a = (c * Math.PI * 2) / 8;
     const panel = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.02, 0.8), cellMat);
@@ -95,7 +107,11 @@ export function buildPathfinderCruiseStage(): {
   }
 
   // Medium-gain antenna horn & Sun sensor
-  const antMat = new THREE.MeshStandardMaterial({ color: 0xd8d8d8, roughness: 0.3, metalness: 0.7 });
+  const antMat = new THREE.MeshStandardMaterial({
+    color: 0xd8d8d8,
+    roughness: 0.3,
+    metalness: 0.7,
+  });
   const antHorn = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.35, 16), antMat);
   antHorn.position.set(0.65, 0.95, -0.65);
   antHorn.rotation.x = 0.4;
@@ -120,12 +136,12 @@ export function buildSupersonicParachute(): {
   const canopyGeo = new THREE.SphereGeometry(3.6, 24, 16, 0, Math.PI * 2, 0, Math.PI * 0.52);
 
   // Procedural alternating orange/white pattern canvas
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = 256;
   canvas.height = 128;
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext("2d")!;
   for (let i = 0; i < 24; i++) {
-    ctx.fillStyle = i % 2 === 0 ? '#ff521a' : '#f5f5f5';
+    ctx.fillStyle = i % 2 === 0 ? "#ff521a" : "#f5f5f5";
     ctx.fillRect((i * 256) / 24, 0, 256 / 24 + 1, 128);
   }
   const tex = new THREE.CanvasTexture(canvas);
@@ -162,8 +178,12 @@ export function buildSupersonicParachute(): {
   }
 
   const lineGeo = new THREE.BufferGeometry();
-  lineGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  const lineMat = new THREE.LineBasicMaterial({ color: 0xddddcc, transparent: true, opacity: 0.75 });
+  lineGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  const lineMat = new THREE.LineBasicMaterial({
+    color: 0xddddcc,
+    transparent: true,
+    opacity: 0.75,
+  });
   const lines = new THREE.LineSegments(lineGeo, lineMat);
   g.add(lines);
 

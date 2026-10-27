@@ -1,9 +1,9 @@
-import * as THREE from 'three';
-import { store } from '../../state/store';
-import { audio } from '../audio';
-import { makeStarfield, fbm, type Scene } from '../utils';
-import { buildExplorer, buildNova, buildSojourner } from '../models/builders';
-import { NOVA_WELCOME_MARS, NOVA_NEAR_SITE, SOJOURNER_WAKE, UI } from '../../data/content';
+import * as THREE from "three";
+import { store } from "../../state/store";
+import { audio } from "../audio";
+import { makeStarfield, fbm, type Scene } from "../utils";
+import { buildExplorer, buildNova, buildSojourner } from "../models/builders";
+import { NOVA_WELCOME_MARS, NOVA_NEAR_SITE, SOJOURNER_WAKE, UI } from "../../data/content";
 
 const SITE = new THREE.Vector3(42, 0, -30);
 const WORLD = 320;
@@ -60,7 +60,7 @@ export class MarsWorldScene implements Scene {
     // terrain
     const geo = new THREE.PlaneGeometry(WORLD, WORLD, 180, 180);
     geo.rotateX(-Math.PI / 2);
-    const pos = geo.attributes['position'] as THREE.BufferAttribute;
+    const pos = geo.attributes["position"] as THREE.BufferAttribute;
     const colors = new Float32Array(pos.count * 3);
     const base = new THREE.Color(0x773a20);
     const light = new THREE.Color(0xa85c38);
@@ -76,11 +76,11 @@ export class MarsWorldScene implements Scene {
       colors[i * 3 + 1] = c.g;
       colors[i * 3 + 2] = c.b;
     }
-    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
     geo.computeVertexNormals();
     const terrain = new THREE.Mesh(
       geo,
-      new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, metalness: 0 })
+      new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, metalness: 0 }),
     );
     terrain.receiveShadow = true;
     this.scene.add(terrain);
@@ -132,18 +132,23 @@ export class MarsWorldScene implements Scene {
         opacity: 0.18,
         side: THREE.DoubleSide,
         depthWrite: false,
-      })
+      }),
     );
     beam.position.y = 15;
     this.beacon.add(beam);
     const ringGeo = new THREE.RingGeometry(1.2, 1.6, 40);
     const ring = new THREE.Mesh(
       ringGeo,
-      new THREE.MeshBasicMaterial({ color: 0xffd97d, transparent: true, opacity: 0.7, side: THREE.DoubleSide })
+      new THREE.MeshBasicMaterial({
+        color: 0xffd97d,
+        transparent: true,
+        opacity: 0.7,
+        side: THREE.DoubleSide,
+      }),
     );
     ring.rotation.x = -Math.PI / 2;
     ring.position.y = 0.15;
-    ring.name = 'beaconRing';
+    ring.name = "beaconRing";
     this.beacon.add(ring);
     this.beacon.position.set(SITE.x + 1, this.groundHeight(SITE.x + 1, SITE.z + 1), SITE.z + 1);
     this.scene.add(this.beacon);
@@ -163,7 +168,7 @@ export class MarsWorldScene implements Scene {
     this.nova.group.position.copy(this.player.position).add(new THREE.Vector3(1.4, 2.4, 1));
     this.scene.add(this.nova.group);
 
-    audio.play('mars');
+    audio.play("mars");
     store.set({ hint: UI.moveHint });
     (window as any).__marsDebug = () => ({
       p: this.player.position.toArray().map((n: number) => n.toFixed(1)),
@@ -178,10 +183,10 @@ export class MarsWorldScene implements Scene {
     };
 
     this.disposers.push(
-      store.on('joystick', (d) => {
+      store.on("joystick", (d) => {
         const v = d as { x: number; y: number };
         this.joy = v;
-      })
+      }),
     );
 
     // welcome dialogue
@@ -227,8 +232,16 @@ export class MarsWorldScene implements Scene {
 
   private buildLander(): THREE.Group {
     const g = new THREE.Group();
-    const mat = new THREE.MeshStandardMaterial({ color: 0xcfc9ba, roughness: 0.55, metalness: 0.35 });
-    const goldMat = new THREE.MeshStandardMaterial({ color: 0xd8a545, roughness: 0.4, metalness: 0.7 });
+    const mat = new THREE.MeshStandardMaterial({
+      color: 0xcfc9ba,
+      roughness: 0.55,
+      metalness: 0.35,
+    });
+    const goldMat = new THREE.MeshStandardMaterial({
+      color: 0xd8a545,
+      roughness: 0.4,
+      metalness: 0.7,
+    });
     // tetrahedral body
     const body = new THREE.Mesh(new THREE.ConeGeometry(1.7, 1.4, 4), goldMat);
     body.position.y = 0.9;
@@ -268,8 +281,8 @@ export class MarsWorldScene implements Scene {
     store.set({ metSojourner: true });
     store.say(SOJOURNER_WAKE, [
       storyDone
-        ? { en: UI.inspectBtn.en, bn: UI.inspectBtn.bn, action: 'openInspect' }
-        : { en: UI.hearStory.en, bn: UI.hearStory.bn, action: 'hearStory' },
+        ? { en: UI.inspectBtn.en, bn: UI.inspectBtn.bn, action: "openInspect" }
+        : { en: UI.hearStory.en, bn: UI.hearStory.bn, action: "hearStory" },
     ]);
     if (!skipCamera) {
       // gently pull camera toward the rover
@@ -285,7 +298,11 @@ export class MarsWorldScene implements Scene {
   onPointerMove(x: number, y: number) {
     if (!this.dragging) return;
     this.camYaw -= (x - this.lastPointer.x) * 2.4;
-    this.camPitch = THREE.MathUtils.clamp(this.camPitch + (y - this.lastPointer.y) * 1.6, 0.05, 1.1);
+    this.camPitch = THREE.MathUtils.clamp(
+      this.camPitch + (y - this.lastPointer.y) * 1.6,
+      0.05,
+      1.1,
+    );
     this.lastPointer = { x, y };
   }
 
@@ -310,8 +327,12 @@ export class MarsWorldScene implements Scene {
   update(dt: number, t: number) {
     // movement input
     const input = new THREE.Vector2(
-      (this.keys.has('KeyD') || this.keys.has('ArrowRight') ? 1 : 0) - (this.keys.has('KeyA') || this.keys.has('ArrowLeft') ? 1 : 0) + this.joy.x,
-      (this.keys.has('KeyW') || this.keys.has('ArrowUp') ? 1 : 0) - (this.keys.has('KeyS') || this.keys.has('ArrowDown') ? 1 : 0) + this.joy.y
+      (this.keys.has("KeyD") || this.keys.has("ArrowRight") ? 1 : 0) -
+        (this.keys.has("KeyA") || this.keys.has("ArrowLeft") ? 1 : 0) +
+        this.joy.x,
+      (this.keys.has("KeyW") || this.keys.has("ArrowUp") ? 1 : 0) -
+        (this.keys.has("KeyS") || this.keys.has("ArrowDown") ? 1 : 0) +
+        this.joy.y,
     );
     const moving = !this.meeting && input.lengthSq() > 0.001;
     if (moving) {
@@ -319,7 +340,11 @@ export class MarsWorldScene implements Scene {
       const speed = 6.5;
       const sin = Math.sin(this.camYaw);
       const cos = Math.cos(this.camYaw);
-      const dir = new THREE.Vector3(input.x * cos - input.y * sin, 0, -input.y * cos - input.x * sin);
+      const dir = new THREE.Vector3(
+        input.x * cos - input.y * sin,
+        0,
+        -input.y * cos - input.x * sin,
+      );
       this.velocity.lerp(dir.multiplyScalar(speed), dt * 8);
       this.player.rotation.y = Math.atan2(this.velocity.x, this.velocity.z);
     } else {
@@ -327,12 +352,20 @@ export class MarsWorldScene implements Scene {
     }
     this.player.position.addScaledVector(this.velocity, dt);
     // world bounds
-    this.player.position.x = THREE.MathUtils.clamp(this.player.position.x, -WORLD / 2 + 10, WORLD / 2 - 10);
-    this.player.position.z = THREE.MathUtils.clamp(this.player.position.z, -WORLD / 2 + 10, WORLD / 2 - 10);
+    this.player.position.x = THREE.MathUtils.clamp(
+      this.player.position.x,
+      -WORLD / 2 + 10,
+      WORLD / 2 - 10,
+    );
+    this.player.position.z = THREE.MathUtils.clamp(
+      this.player.position.z,
+      -WORLD / 2 + 10,
+      WORLD / 2 - 10,
+    );
     this.player.position.y = this.groundHeight(this.player.position.x, this.player.position.z);
 
     // walk animation
-    const limbs = this.player.userData['limbs'];
+    const limbs = this.player.userData["limbs"];
     if (limbs) {
       const speedK = Math.min(this.velocity.length() / 6.5, 1);
       const sw = Math.sin(t * 9) * 0.55 * speedK;
@@ -345,12 +378,20 @@ export class MarsWorldScene implements Scene {
 
     // Nova hover-follow
     this.nova.update(dt, t);
-    const novaTarget = this.player.position.clone().add(new THREE.Vector3(Math.sin(t * 0.4) * 1.6, 2.3 + Math.sin(t * 1.5) * 0.18, Math.cos(t * 0.4) * 1.6));
+    const novaTarget = this.player.position
+      .clone()
+      .add(
+        new THREE.Vector3(
+          Math.sin(t * 0.4) * 1.6,
+          2.3 + Math.sin(t * 1.5) * 0.18,
+          Math.cos(t * 0.4) * 1.6,
+        ),
+      );
     this.nova.group.position.lerp(novaTarget, dt * 2.2);
     this.nova.group.lookAt(this.meeting ? this.rover.position : this.player.position);
 
     // beacon pulse
-    const ring = this.beacon.getObjectByName('beaconRing') as THREE.Mesh;
+    const ring = this.beacon.getObjectByName("beaconRing") as THREE.Mesh;
     if (ring) {
       const k = 1 + Math.sin(t * 2.4) * 0.25;
       ring.scale.set(k, k, 1);
@@ -371,7 +412,11 @@ export class MarsWorldScene implements Scene {
     } else {
       // slow orbit toward rover while meeting
       const toRover = this.rover.position.clone().sub(this.player.position);
-      this.camYaw = THREE.MathUtils.lerp(this.camYaw, Math.atan2(-toRover.x, -toRover.z) + Math.PI, dt * 1.5);
+      this.camYaw = THREE.MathUtils.lerp(
+        this.camYaw,
+        Math.atan2(-toRover.x, -toRover.z) + Math.PI,
+        dt * 1.5,
+      );
     }
 
     // third-person camera
@@ -379,7 +424,7 @@ export class MarsWorldScene implements Scene {
     const camOffset = new THREE.Vector3(
       Math.sin(this.camYaw) * Math.cos(this.camPitch),
       Math.sin(this.camPitch),
-      Math.cos(this.camYaw) * Math.cos(this.camPitch)
+      Math.cos(this.camYaw) * Math.cos(this.camPitch),
     ).multiplyScalar(this.camDist);
     const camPos = target.clone().add(camOffset);
     camPos.y = Math.max(camPos.y, this.groundHeight(camPos.x, camPos.z) + 0.6);

@@ -1,0 +1,6 @@
+{
+  "name": "Astro Relic",
+  "description": "An interactive 3D space narrative game exploring forgotten relics and mysteries across Mars and the solar system.",
+  "permissions": [],
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

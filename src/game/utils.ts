@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 
 // ---------- deterministic hash noise ----------
 function hash(x: number, y: number): number {
@@ -39,22 +39,25 @@ export function fbm(x: number, y: number, octaves = 4): number {
 // ---------- canvas texture helpers ----------
 export function makeCanvasTexture(
   size: number,
-  painter: (ctx: CanvasRenderingContext2D, size: number) => void
+  painter: (ctx: CanvasRenderingContext2D, size: number) => void,
 ): THREE.CanvasTexture {
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = canvas.height = size;
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext("2d")!;
   painter(ctx, size);
   const tex = new THREE.CanvasTexture(canvas);
   tex.colorSpace = THREE.SRGBColorSpace;
   return tex;
 }
 
-export function makeGlowTexture(inner = 'rgba(255,220,160,1)', outer = 'rgba(255,140,60,0)'): THREE.CanvasTexture {
+export function makeGlowTexture(
+  inner = "rgba(255,220,160,1)",
+  outer = "rgba(255,140,60,0)",
+): THREE.CanvasTexture {
   return makeCanvasTexture(128, (ctx, s) => {
     const g = ctx.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
     g.addColorStop(0, inner);
-    g.addColorStop(0.35, inner.replace('1)', '0.5)'));
+    g.addColorStop(0.35, inner.replace("1)", "0.5)"));
     g.addColorStop(1, outer);
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, s, s);
@@ -63,20 +66,20 @@ export function makeGlowTexture(inner = 'rgba(255,220,160,1)', outer = 'rgba(255
 
 export function makeTextSprite(
   text: string,
-  opts: { size?: number; color?: string; font?: string } = {}
+  opts: { size?: number; color?: string; font?: string } = {},
 ): THREE.Sprite {
-  const { size = 1, color = '#e8e4da', font = '500 42px "IBM Plex Mono", monospace' } = opts;
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d')!;
+  const { size = 1, color = "#e8e4da", font = '500 42px "IBM Plex Mono", monospace' } = opts;
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d")!;
   ctx.font = font;
   const w = Math.ceil(ctx.measureText(text).width) + 24;
   canvas.width = w;
   canvas.height = 64;
-  const c2 = canvas.getContext('2d')!;
+  const c2 = canvas.getContext("2d")!;
   c2.font = font;
   c2.fillStyle = color;
-  c2.textAlign = 'center';
-  c2.textBaseline = 'middle';
+  c2.textAlign = "center";
+  c2.textBaseline = "middle";
   c2.shadowColor = color;
   c2.shadowBlur = 12;
   c2.fillText(text, w / 2, 32);
@@ -101,13 +104,17 @@ export function makeStarfield(count = 4000, radius = 900): THREE.Points {
     pos[i * 3 + 1] = r * Math.cos(phi);
     pos[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
     const warmth = Math.random();
-    const c = new THREE.Color().setHSL(warmth < 0.75 ? 0.6 : 0.08, 0.25, 0.65 + Math.random() * 0.35);
+    const c = new THREE.Color().setHSL(
+      warmth < 0.75 ? 0.6 : 0.08,
+      0.25,
+      0.65 + Math.random() * 0.35,
+    );
     col[i * 3] = c.r;
     col[i * 3 + 1] = c.g;
     col[i * 3 + 2] = c.b;
   }
-  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
   const mat = new THREE.PointsMaterial({
     size: 1.4,
     vertexColors: true,

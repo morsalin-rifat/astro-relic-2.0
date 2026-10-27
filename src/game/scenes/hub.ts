@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import { makeGlowTexture, makeCanvasTexture, fbm, makeStarfield, type Scene } from '../utils';
-import { store } from '../../state/store';
+import * as THREE from "three";
+import { makeGlowTexture, makeCanvasTexture, fbm, makeStarfield, type Scene } from "../utils";
+import { store } from "../../state/store";
 
-type Universe = 'mars' | 'moon';
+type Universe = "mars" | "moon";
 
 /* ---------- textures ---------- */
 
@@ -15,7 +15,7 @@ function terrainTexture(kind: Universe): THREE.CanvasTexture {
         const n2 = fbm(x * 0.18 + 40, y * 0.18 + 40, 3);
         const k = Math.min(1.25, 0.35 + n * 1.05 + (n2 - 0.5) * 0.25);
         const i = (y * s + x) * 4;
-        if (kind === 'mars') {
+        if (kind === "mars") {
           img.data[i] = 158 * k;
           img.data[i + 1] = 84 * k;
           img.data[i + 2] = 50 * k;
@@ -29,17 +29,17 @@ function terrainTexture(kind: Universe): THREE.CanvasTexture {
       }
     }
     ctx.putImageData(img, 0, 0);
-    if (kind === 'moon') {
+    if (kind === "moon") {
       // craters: dark bowl + bright rim
       for (let c = 0; c < 46; c++) {
         const x = Math.random() * s;
         const y = Math.random() * s;
         const r = 3 + Math.random() * 14;
         const g = ctx.createRadialGradient(x, y, r * 0.2, x, y, r);
-        g.addColorStop(0, 'rgba(0,0,0,0.22)');
-        g.addColorStop(0.75, 'rgba(0,0,0,0.05)');
-        g.addColorStop(0.92, 'rgba(255,255,255,0.14)');
-        g.addColorStop(1, 'rgba(255,255,255,0)');
+        g.addColorStop(0, "rgba(0,0,0,0.22)");
+        g.addColorStop(0.75, "rgba(0,0,0,0.05)");
+        g.addColorStop(0.92, "rgba(255,255,255,0.14)");
+        g.addColorStop(1, "rgba(255,255,255,0)");
         ctx.fillStyle = g;
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
@@ -59,7 +59,7 @@ function terrainTexture(kind: Universe): THREE.CanvasTexture {
 
 function earthTexture(): THREE.CanvasTexture {
   return makeCanvasTexture(256, (ctx, s) => {
-    ctx.fillStyle = '#0f3f77';
+    ctx.fillStyle = "#0f3f77";
     ctx.fillRect(0, 0, s, s);
     // continents
     for (let i = 0; i < 26; i++) {
@@ -68,7 +68,13 @@ function earthTexture(): THREE.CanvasTexture {
       ctx.fillStyle = `rgba(58,125,72,${0.55 + Math.random() * 0.35})`;
       ctx.beginPath();
       for (let b = 0; b < 5; b++) {
-        ctx.arc(x + (Math.random() - 0.5) * 34, y + (Math.random() - 0.5) * 22, 6 + Math.random() * 14, 0, Math.PI * 2);
+        ctx.arc(
+          x + (Math.random() - 0.5) * 34,
+          y + (Math.random() - 0.5) * 22,
+          6 + Math.random() * 14,
+          0,
+          Math.PI * 2,
+        );
       }
       ctx.fill();
     }
@@ -78,11 +84,19 @@ function earthTexture(): THREE.CanvasTexture {
       const y = Math.random() * s;
       ctx.fillStyle = `rgba(255,255,255,${0.1 + Math.random() * 0.2})`;
       ctx.beginPath();
-      ctx.ellipse(x, y, 8 + Math.random() * 22, 3 + Math.random() * 6, Math.random() * Math.PI, 0, Math.PI * 2);
+      ctx.ellipse(
+        x,
+        y,
+        8 + Math.random() * 22,
+        3 + Math.random() * 6,
+        Math.random() * Math.PI,
+        0,
+        Math.PI * 2,
+      );
       ctx.fill();
     }
     // polar caps
-    ctx.fillStyle = 'rgba(240,248,255,0.75)';
+    ctx.fillStyle = "rgba(240,248,255,0.75)";
     ctx.fillRect(0, 0, s, 8);
     ctx.fillRect(0, s - 8, s, 8);
   });
@@ -91,16 +105,16 @@ function earthTexture(): THREE.CanvasTexture {
 /* ---------- terrain height ---------- */
 
 function terrainHeight(kind: Universe, x: number, z: number): number {
-  if (kind === 'mars') {
+  if (kind === "mars") {
     return fbm(x * 0.03, z * 0.03, 4) * 3.4 + fbm(x * 0.1, z * 0.1, 3) * 0.8 - 2.2;
   }
   return fbm(x * 0.05 + 7, z * 0.05 + 7, 4) * 2.2 + fbm(x * 0.14, z * 0.14, 2) * 0.6 - 1.6;
 }
 
 function displaceTerrain(geo: THREE.PlaneGeometry, kind: Universe) {
-  const pos = geo.getAttribute('position') as THREE.BufferAttribute;
+  const pos = geo.getAttribute("position") as THREE.BufferAttribute;
   const craters: { x: number; z: number; r: number; d: number }[] = [];
-  if (kind === 'moon') {
+  if (kind === "moon") {
     for (let i = 0; i < 16; i++) {
       craters.push({
         x: (Math.random() - 0.5) * 220,
@@ -138,7 +152,7 @@ export class HubScene implements Scene {
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
   private mouse = { x: 0, y: 0 };
-  private universe: Universe = 'mars';
+  private universe: Universe = "mars";
   private disposables: { dispose(): void }[] = [];
 
   private stars: THREE.Points;
@@ -176,7 +190,7 @@ export class HubScene implements Scene {
         metalness: 0.05,
         emissive: new THREE.Color(0x0c2c55),
         emissiveIntensity: 0.5,
-      })
+      }),
     );
     const atmo = new THREE.Mesh(
       new THREE.SphereGeometry(5.55, 48, 48),
@@ -202,9 +216,9 @@ export class HubScene implements Scene {
         transparent: true,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
-      })
+      }),
     );
-    const glowTex = makeGlowTexture('rgba(255,255,255,0.6)', 'rgba(255,255,255,0)');
+    const glowTex = makeGlowTexture("rgba(255,255,255,0.6)", "rgba(255,255,255,0)");
     const earthGlow = new THREE.Sprite(
       new THREE.SpriteMaterial({
         map: glowTex,
@@ -213,7 +227,7 @@ export class HubScene implements Scene {
         opacity: 0.7,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
-      })
+      }),
     );
     earthGlow.scale.set(24, 24, 1);
     this.earthGroup.add(this.earth, atmo, earthGlow);
@@ -221,7 +235,7 @@ export class HubScene implements Scene {
     this.disposables.push(earthGeo, earthTex, glowTex);
 
     // ---------- horizon haze ----------
-    const hazeTex = makeGlowTexture('rgba(255,255,255,0.55)', 'rgba(255,255,255,0)');
+    const hazeTex = makeGlowTexture("rgba(255,255,255,0.55)", "rgba(255,255,255,0)");
     this.haze = new THREE.Sprite(
       new THREE.SpriteMaterial({
         map: hazeTex,
@@ -229,7 +243,7 @@ export class HubScene implements Scene {
         transparent: true,
         opacity: 0.5,
         depthWrite: false,
-      })
+      }),
     );
     this.haze.scale.set(95, 36, 1);
     this.haze.position.set(0, 1.2, -70);
@@ -239,22 +253,22 @@ export class HubScene implements Scene {
     // ---------- terrains ----------
     const marsGeo = new THREE.PlaneGeometry(240, 100, 150, 60);
     marsGeo.rotateX(-Math.PI / 2);
-    displaceTerrain(marsGeo, 'mars');
-    const marsTex = terrainTexture('mars');
+    displaceTerrain(marsGeo, "mars");
+    const marsTex = terrainTexture("mars");
     this.marsTerrain = new THREE.Mesh(
       marsGeo,
-      new THREE.MeshStandardMaterial({ map: marsTex, roughness: 1 })
+      new THREE.MeshStandardMaterial({ map: marsTex, roughness: 1 }),
     );
     this.marsTerrain.position.set(0, -3.6, -40);
     this.scene.add(this.marsTerrain);
 
     const moonGeo = new THREE.PlaneGeometry(240, 100, 150, 60);
     moonGeo.rotateX(-Math.PI / 2);
-    displaceTerrain(moonGeo, 'moon');
-    const moonTex = terrainTexture('moon');
+    displaceTerrain(moonGeo, "moon");
+    const moonTex = terrainTexture("moon");
     this.moonTerrain = new THREE.Mesh(
       moonGeo,
-      new THREE.MeshStandardMaterial({ map: moonTex, roughness: 1 })
+      new THREE.MeshStandardMaterial({ map: moonTex, roughness: 1 }),
     );
     this.moonTerrain.position.set(0, -3.4, -40);
     this.scene.add(this.moonTerrain);
@@ -267,7 +281,7 @@ export class HubScene implements Scene {
       const m = new THREE.Mesh(rockGeo, rustMat);
       const x = (Math.random() - 0.5) * 120;
       const z = -8 - Math.random() * 55;
-      m.position.set(x, -3.6 + terrainHeight('mars', x, z), z);
+      m.position.set(x, -3.6 + terrainHeight("mars", x, z), z);
       m.scale.setScalar(0.15 + Math.random() * 0.6);
       m.rotation.set(Math.random() * 3, Math.random() * 3, Math.random() * 3);
       this.marsRocks.add(m);
@@ -277,7 +291,7 @@ export class HubScene implements Scene {
       const m = new THREE.Mesh(rockGeo, greyMat);
       const x = (Math.random() - 0.5) * 120;
       const z = -8 - Math.random() * 55;
-      m.position.set(x, -3.4 + terrainHeight('moon', x, z), z);
+      m.position.set(x, -3.4 + terrainHeight("moon", x, z), z);
       m.scale.setScalar(0.15 + Math.random() * 0.7);
       m.rotation.set(Math.random() * 3, Math.random() * 3, Math.random() * 3);
       this.moonRocks.add(m);
@@ -296,7 +310,7 @@ export class HubScene implements Scene {
 
   private applyUniverse(u: Universe) {
     this.universe = u;
-    const mars = u === 'mars';
+    const mars = u === "mars";
     this.marsTerrain.visible = mars;
     this.marsRocks.visible = mars;
     this.moonTerrain.visible = !mars;
@@ -359,10 +373,7 @@ export class HubScene implements Scene {
     this.scene.traverse((o) => {
       const mesh = o as THREE.Mesh;
       if (mesh.geometry) mesh.geometry.dispose();
-      const mat = (mesh as THREE.Mesh).material as
-        | THREE.Material
-        | THREE.Material[]
-        | undefined;
+      const mat = (mesh as THREE.Mesh).material as THREE.Material | THREE.Material[] | undefined;
       if (Array.isArray(mat)) mat.forEach((m) => m.dispose());
       else mat?.dispose();
     });

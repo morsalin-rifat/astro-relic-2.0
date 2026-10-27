@@ -1,9 +1,9 @@
-import * as THREE from 'three';
-import { store } from '../../state/store';
-import { audio } from '../audio';
-import { makeStarfield, fbm, type Scene } from '../utils';
-import { buildSojourner, buildFlag, buildNova } from '../models/builders';
-import { SOJOURNER_AFTER_STORY } from '../../data/content';
+import * as THREE from "three";
+import { store } from "../../state/store";
+import { audio } from "../audio";
+import { makeStarfield, fbm, type Scene } from "../utils";
+import { buildSojourner, buildFlag, buildNova } from "../models/builders";
+import { SOJOURNER_AFTER_STORY } from "../../data/content";
 
 export class CompleteScene implements Scene {
   private renderer: THREE.WebGLRenderer;
@@ -33,14 +33,14 @@ export class CompleteScene implements Scene {
 
     const geo = new THREE.CircleGeometry(70, 80);
     geo.rotateX(-Math.PI / 2);
-    const pos = geo.attributes['position'] as THREE.BufferAttribute;
+    const pos = geo.attributes["position"] as THREE.BufferAttribute;
     for (let i = 0; i < pos.count; i++) {
       pos.setY(i, fbm(pos.getX(i) * 0.03, pos.getZ(i) * 0.03, 3) * 1.8);
     }
     geo.computeVertexNormals();
     const terrain = new THREE.Mesh(
       geo,
-      new THREE.MeshStandardMaterial({ color: 0x8a4426, roughness: 1 })
+      new THREE.MeshStandardMaterial({ color: 0x8a4426, roughness: 1 }),
     );
     terrain.receiveShadow = true;
     this.scene.add(terrain);
@@ -60,11 +60,13 @@ export class CompleteScene implements Scene {
     this.flagGroup = flag.group;
     this.cloth = flag.cloth;
     this.cloth.position.set(0.78, this.flagY, 0);
-    this.clothBase = ((this.cloth.geometry as THREE.PlaneGeometry).attributes['position'] as THREE.BufferAttribute).array.slice() as Float32Array;
+    this.clothBase = (
+      (this.cloth.geometry as THREE.PlaneGeometry).attributes["position"] as THREE.BufferAttribute
+    ).array.slice() as Float32Array;
     this.flagGroup.position.set(1.4, 0, -1);
     this.scene.add(this.flagGroup);
 
-    audio.play('mars');
+    audio.play("mars");
 
     // rover farewell lines, then the flag rises
     setTimeout(() => {
@@ -88,7 +90,7 @@ export class CompleteScene implements Scene {
 
     // cloth wave
     const posAttr = (this.cloth.geometry as THREE.PlaneGeometry).attributes[
-      'position'
+      "position"
     ] as THREE.BufferAttribute;
     for (let i = 0; i < posAttr.count; i++) {
       const x = this.clothBase[i * 3] ?? 0;
@@ -111,7 +113,7 @@ export class CompleteScene implements Scene {
       store.get().queue.length === 0
     ) {
       this.overlayShown = true;
-      store.emit('ui:showComplete');
+      store.emit("ui:showComplete");
     }
 
     this.stars.rotation.y += dt * 0.002;

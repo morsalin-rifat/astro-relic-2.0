@@ -1,11 +1,11 @@
-import { store } from '../state/store';
+import { store } from "../state/store";
 
 // Tiny ambient audio engine: deep-space drone for space scenes, filtered wind for Mars.
 class AmbientAudio {
   private ctx: AudioContext | null = null;
   private master: GainNode | null = null;
   private nodes: AudioNode[] = [];
-  private mode: 'space' | 'mars' | null = null;
+  private mode: "space" | "mars" | null = null;
 
   private ensure() {
     if (!this.ctx) {
@@ -14,10 +14,10 @@ class AmbientAudio {
       this.master.gain.value = 0;
       this.master.connect(this.ctx.destination);
     }
-    if (this.ctx.state === 'suspended') this.ctx.resume();
+    if (this.ctx.state === "suspended") this.ctx.resume();
   }
 
-  play(mode: 'space' | 'mars') {
+  play(mode: "space" | "mars") {
     if (store.get().muted) return;
     this.ensure();
     if (this.mode === mode) return;
@@ -26,12 +26,12 @@ class AmbientAudio {
     const ctx = this.ctx!;
     const out = this.master!;
 
-    if (mode === 'space') {
+    if (mode === "space") {
       const o1 = ctx.createOscillator();
-      o1.type = 'sine';
+      o1.type = "sine";
       o1.frequency.value = 55;
       const o2 = ctx.createOscillator();
-      o2.type = 'sine';
+      o2.type = "sine";
       o2.frequency.value = 55.7;
       const g = ctx.createGain();
       g.gain.value = 0.16;
@@ -55,7 +55,7 @@ class AmbientAudio {
       src.buffer = buf;
       src.loop = true;
       const filt = ctx.createBiquadFilter();
-      filt.type = 'bandpass';
+      filt.type = "bandpass";
       filt.frequency.value = 320;
       filt.Q.value = 0.6;
       const g = ctx.createGain();
@@ -96,7 +96,7 @@ class AmbientAudio {
     this.ensure();
     const ctx = this.ctx!;
     const o = ctx.createOscillator();
-    o.type = 'square';
+    o.type = "square";
     o.frequency.value = freq;
     const g = ctx.createGain();
     g.gain.setValueAtTime(0.0001, ctx.currentTime);

@@ -79,10 +79,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Astro Relic — Abandoned but Not Forgotten" },
-      { name: "description", content: "An interactive 3D space narrative game exploring forgotten relics and mysteries across Mars and the solar system." },
+      {
+        name: "description",
+        content:
+          "An interactive 3D space narrative game exploring forgotten relics and mysteries across Mars and the solar system.",
+      },
       { name: "author", content: "Morsalin Rifat" },
       { property: "og:title", content: "Astro Relic — Abandoned but Not Forgotten" },
-      { property: "og:description", content: "An interactive 3D space narrative game exploring forgotten relics and mysteries across Mars and the solar system." },
+      {
+        property: "og:description",
+        content:
+          "An interactive 3D space narrative game exploring forgotten relics and mysteries across Mars and the solar system.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },

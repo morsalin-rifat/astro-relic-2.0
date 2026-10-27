@@ -1,10 +1,10 @@
-import * as THREE from 'three';
-import { makeCanvasTexture, fbm } from './utils';
+import * as THREE from "three";
+import { makeCanvasTexture, fbm } from "./utils";
 
 // Helper for generating noise-based planet textures
 function createProceduralTexture(
   size: number,
-  draw: (ctx: CanvasRenderingContext2D, s: number) => void
+  draw: (ctx: CanvasRenderingContext2D, s: number) => void,
 ): THREE.CanvasTexture {
   return makeCanvasTexture(size, draw);
 }
@@ -39,14 +39,14 @@ export function createSunTexture(): THREE.CanvasTexture {
     ctx.putImageData(imgData, 0, 0);
 
     // Overlay prominent solar flares / granules
-    ctx.fillStyle = 'rgba(255, 255, 200, 0.2)';
+    ctx.fillStyle = "rgba(255, 255, 200, 0.2)";
     for (let i = 0; i < 30; i++) {
       const px = Math.random() * s;
       const py = Math.random() * s;
       const pr = 4 + Math.random() * 16;
       const grad = ctx.createRadialGradient(px, py, 0, px, py, pr);
-      grad.addColorStop(0, 'rgba(255, 255, 220, 0.6)');
-      grad.addColorStop(1, 'rgba(255, 140, 20, 0)');
+      grad.addColorStop(0, "rgba(255, 255, 220, 0.6)");
+      grad.addColorStop(1, "rgba(255, 140, 20, 0)");
       ctx.fillStyle = grad;
       ctx.beginPath();
       ctx.arc(px, py, pr, 0, Math.PI * 2);
@@ -58,7 +58,7 @@ export function createSunTexture(): THREE.CanvasTexture {
 // ----------------- MERCURY TEXTURE -----------------
 export function createMercuryTexture(): THREE.CanvasTexture {
   return createProceduralTexture(512, (ctx, s) => {
-    ctx.fillStyle = '#6e6963';
+    ctx.fillStyle = "#6e6963";
     ctx.fillRect(0, 0, s, s);
 
     // Surface rough craters and maria
@@ -83,12 +83,12 @@ export function createMercuryTexture(): THREE.CanvasTexture {
       const cx = Math.random() * s;
       const cy = Math.random() * s;
       const r = 2 + Math.random() * 14;
-      ctx.strokeStyle = 'rgba(200, 195, 185, 0.4)';
+      ctx.strokeStyle = "rgba(200, 195, 185, 0.4)";
       ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
       ctx.stroke();
-      ctx.fillStyle = 'rgba(40, 38, 36, 0.3)';
+      ctx.fillStyle = "rgba(40, 38, 36, 0.3)";
       ctx.beginPath();
       ctx.arc(cx, cy, r * 0.7, 0, Math.PI * 2);
       ctx.fill();
@@ -101,16 +101,16 @@ export function createVenusTexture(): THREE.CanvasTexture {
   return createProceduralTexture(512, (ctx, s) => {
     // Warm golden cream base
     const grad = ctx.createLinearGradient(0, 0, 0, s);
-    grad.addColorStop(0, '#ecd2a4');
-    grad.addColorStop(0.5, '#deb87c');
-    grad.addColorStop(1, '#e3c690');
+    grad.addColorStop(0, "#ecd2a4");
+    grad.addColorStop(0.5, "#deb87c");
+    grad.addColorStop(1, "#e3c690");
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, s, s);
 
     // Swirling sulfuric cloud bands
     for (let y = 0; y < s; y += 4) {
       const offset = Math.sin(y * 0.05) * 20;
-      ctx.fillStyle = y % 8 === 0 ? 'rgba(215, 175, 110, 0.35)' : 'rgba(255, 240, 210, 0.3)';
+      ctx.fillStyle = y % 8 === 0 ? "rgba(215, 175, 110, 0.35)" : "rgba(255, 240, 210, 0.3)";
       ctx.fillRect(0, y + offset, s, 6);
     }
 
@@ -119,7 +119,7 @@ export function createVenusTexture(): THREE.CanvasTexture {
       const cx = Math.random() * s;
       const cy = Math.random() * s;
       const len = 40 + Math.random() * 90;
-      ctx.strokeStyle = 'rgba(255, 245, 225, 0.25)';
+      ctx.strokeStyle = "rgba(255, 245, 225, 0.25)";
       ctx.lineWidth = 3 + Math.random() * 5;
       ctx.beginPath();
       ctx.moveTo(cx, cy);
@@ -134,9 +134,9 @@ export function createEarthTexture(): THREE.CanvasTexture {
   return createProceduralTexture(1024, (ctx, s) => {
     // Deep Ocean gradient
     const oceanGrad = ctx.createLinearGradient(0, 0, 0, s);
-    oceanGrad.addColorStop(0, '#0f2b54');
-    oceanGrad.addColorStop(0.5, '#174785');
-    oceanGrad.addColorStop(1, '#0e2447');
+    oceanGrad.addColorStop(0, "#0f2b54");
+    oceanGrad.addColorStop(0.5, "#174785");
+    oceanGrad.addColorStop(1, "#0e2447");
     ctx.fillStyle = oceanGrad;
     ctx.fillRect(0, 0, s, s);
 
@@ -218,7 +218,7 @@ export function createEarthCloudsTexture(): THREE.CanvasTexture {
 // ----------------- MOON TEXTURE -----------------
 export function createMoonTexture(): THREE.CanvasTexture {
   return createProceduralTexture(512, (ctx, s) => {
-    ctx.fillStyle = '#8e8e93';
+    ctx.fillStyle = "#8e8e93";
     ctx.fillRect(0, 0, s, s);
 
     // Dark lunar maria basalt basins
@@ -227,9 +227,9 @@ export function createMoonTexture(): THREE.CanvasTexture {
       const my = 0.2 * s + Math.random() * 0.6 * s;
       const mr = 40 + Math.random() * 90;
       const grad = ctx.createRadialGradient(mx, my, 0, mx, my, mr);
-      grad.addColorStop(0, 'rgba(65, 65, 70, 0.7)');
-      grad.addColorStop(0.7, 'rgba(80, 80, 85, 0.4)');
-      grad.addColorStop(1, 'rgba(120, 120, 125, 0)');
+      grad.addColorStop(0, "rgba(65, 65, 70, 0.7)");
+      grad.addColorStop(0.7, "rgba(80, 80, 85, 0.4)");
+      grad.addColorStop(1, "rgba(120, 120, 125, 0)");
       ctx.fillStyle = grad;
       ctx.beginPath();
       ctx.arc(mx, my, mr, 0, Math.PI * 2);
@@ -241,7 +241,7 @@ export function createMoonTexture(): THREE.CanvasTexture {
       const cx = Math.random() * s;
       const cy = Math.random() * s;
       const r = 2 + Math.random() * 12;
-      ctx.strokeStyle = 'rgba(235, 235, 240, 0.6)';
+      ctx.strokeStyle = "rgba(235, 235, 240, 0.6)";
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
@@ -249,7 +249,7 @@ export function createMoonTexture(): THREE.CanvasTexture {
 
       if (r > 7) {
         // Ejecta rays
-        ctx.strokeStyle = 'rgba(220, 220, 230, 0.2)';
+        ctx.strokeStyle = "rgba(220, 220, 230, 0.2)";
         ctx.beginPath();
         ctx.moveTo(cx - r * 2.5, cy);
         ctx.lineTo(cx + r * 2.5, cy);
@@ -266,9 +266,9 @@ export function createMarsTexture(): THREE.CanvasTexture {
   return createProceduralTexture(1024, (ctx, s) => {
     // Rich red-orange iron oxide soil
     const baseGrad = ctx.createLinearGradient(0, 0, 0, s);
-    baseGrad.addColorStop(0, '#ba4828');
-    baseGrad.addColorStop(0.5, '#cc5634');
-    baseGrad.addColorStop(1, '#a83c1e');
+    baseGrad.addColorStop(0, "#ba4828");
+    baseGrad.addColorStop(0.5, "#cc5634");
+    baseGrad.addColorStop(1, "#a83c1e");
     ctx.fillStyle = baseGrad;
     ctx.fillRect(0, 0, s, s);
 
@@ -298,7 +298,7 @@ export function createMarsTexture(): THREE.CanvasTexture {
     ctx.putImageData(imgData, 0, 0);
 
     // Valles Marineris massive canyon rift
-    ctx.strokeStyle = 'rgba(70, 20, 10, 0.75)';
+    ctx.strokeStyle = "rgba(70, 20, 10, 0.75)";
     ctx.lineWidth = 12;
     ctx.beginPath();
     ctx.moveTo(s * 0.25, s * 0.52);
@@ -306,7 +306,7 @@ export function createMarsTexture(): THREE.CanvasTexture {
     ctx.stroke();
 
     // Polar ice caps (North & South)
-    ctx.fillStyle = 'rgba(255, 250, 245, 0.95)';
+    ctx.fillStyle = "rgba(255, 250, 245, 0.95)";
     ctx.beginPath();
     ctx.ellipse(s / 2, 24, s * 0.35, 24, 0, 0, Math.PI * 2);
     ctx.fill();
@@ -322,14 +322,23 @@ export function createJupiterTexture(): THREE.CanvasTexture {
   return createProceduralTexture(1024, (ctx, s) => {
     // Jupiter's iconic alternating ammonia/sulfur cloud belts
     const colors = [
-      '#e4d0b2', '#c28d5d', '#dfcaa4', '#9e623b',
-      '#e9d8be', '#7e4726', '#e0cfb8', '#9e623b',
-      '#dfcca6', '#b0794e', '#ebdcc5', '#985934',
+      "#e4d0b2",
+      "#c28d5d",
+      "#dfcaa4",
+      "#9e623b",
+      "#e9d8be",
+      "#7e4726",
+      "#e0cfb8",
+      "#9e623b",
+      "#dfcca6",
+      "#b0794e",
+      "#ebdcc5",
+      "#985934",
     ];
 
     const bandHeight = s / colors.length;
     for (let i = 0; i < colors.length; i++) {
-      ctx.fillStyle = colors[i] ?? '#000000';
+      ctx.fillStyle = colors[i] ?? "#000000";
       ctx.fillRect(0, i * bandHeight, s, bandHeight + 2);
     }
 
@@ -362,16 +371,16 @@ export function createJupiterTexture(): THREE.CanvasTexture {
     const grsRadiusY = s * 0.055;
 
     // Spot outer turbulence ring
-    ctx.fillStyle = '#b3472b';
+    ctx.fillStyle = "#b3472b";
     ctx.beginPath();
     ctx.ellipse(grsX, grsY, grsRadiusX, grsRadiusY, -0.05, 0, Math.PI * 2);
     ctx.fill();
 
     // Spot core
     const grsCore = ctx.createRadialGradient(grsX, grsY, 0, grsX, grsY, grsRadiusX);
-    grsCore.addColorStop(0, 'rgba(230, 85, 45, 0.95)');
-    grsCore.addColorStop(0.7, 'rgba(175, 55, 30, 0.85)');
-    grsCore.addColorStop(1, 'rgba(140, 45, 25, 0)');
+    grsCore.addColorStop(0, "rgba(230, 85, 45, 0.95)");
+    grsCore.addColorStop(0.7, "rgba(175, 55, 30, 0.85)");
+    grsCore.addColorStop(1, "rgba(140, 45, 25, 0)");
     ctx.fillStyle = grsCore;
     ctx.beginPath();
     ctx.ellipse(grsX, grsY, grsRadiusX, grsRadiusY, -0.05, 0, Math.PI * 2);
@@ -384,16 +393,16 @@ export function createSaturnTexture(): THREE.CanvasTexture {
   return createProceduralTexture(512, (ctx, s) => {
     // Subtle golden beige pastel bands
     const grad = ctx.createLinearGradient(0, 0, 0, s);
-    grad.addColorStop(0, '#e5d1a8');
-    grad.addColorStop(0.25, '#d6be90');
-    grad.addColorStop(0.5, '#e8d8b4');
-    grad.addColorStop(0.75, '#c9ae7d');
-    grad.addColorStop(1, '#e2cea2');
+    grad.addColorStop(0, "#e5d1a8");
+    grad.addColorStop(0.25, "#d6be90");
+    grad.addColorStop(0.5, "#e8d8b4");
+    grad.addColorStop(0.75, "#c9ae7d");
+    grad.addColorStop(1, "#e2cea2");
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, s, s);
 
     for (let y = 0; y < s; y += 3) {
-      ctx.fillStyle = y % 6 === 0 ? 'rgba(180, 150, 100, 0.15)' : 'rgba(255, 245, 220, 0.12)';
+      ctx.fillStyle = y % 6 === 0 ? "rgba(180, 150, 100, 0.15)" : "rgba(255, 245, 220, 0.12)";
       ctx.fillRect(0, y, s, 3);
     }
   });
@@ -408,7 +417,9 @@ export function createSaturnRingTexture(): THREE.CanvasTexture {
     for (let x = 0; x < s; x++) {
       const t = x / s; // 0 = inner radius, 1 = outer radius
       let alpha = 0;
-      let r = 215, g = 195, b = 150;
+      let r = 215,
+        g = 195,
+        b = 150;
 
       if (t < 0.12) {
         // Transparent inside
@@ -416,21 +427,27 @@ export function createSaturnRingTexture(): THREE.CanvasTexture {
       } else if (t < 0.32) {
         // C Ring (faint, translucent)
         alpha = 0.25 + (t - 0.12) * 0.4;
-        r = 175; g = 155; b = 125;
+        r = 175;
+        g = 155;
+        b = 125;
       } else if (t < 0.68) {
         // B Ring (brightest, densest ring)
         alpha = 0.85 + Math.sin(t * 120) * 0.1;
-        r = 230; g = 210; b = 170;
+        r = 230;
+        g = 210;
+        b = 170;
       } else if (t < 0.74) {
         // CASSINI DIVISION (gap between B and A rings)
         alpha = 0.05; // near transparent gap
       } else if (t < 0.94) {
         // A Ring (wide bright outer ring)
         alpha = 0.65 + Math.sin(t * 80) * 0.12;
-        r = 210; g = 190; b = 155;
+        r = 210;
+        g = 190;
+        b = 155;
       } else {
         // Outer feather edge
-        alpha = Math.max(0, (1 - t) / 0.06 * 0.4);
+        alpha = Math.max(0, ((1 - t) / 0.06) * 0.4);
       }
 
       ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
@@ -443,15 +460,15 @@ export function createSaturnRingTexture(): THREE.CanvasTexture {
 export function createUranusTexture(): THREE.CanvasTexture {
   return createProceduralTexture(512, (ctx, s) => {
     const grad = ctx.createLinearGradient(0, 0, 0, s);
-    grad.addColorStop(0, '#b6e9ec');
-    grad.addColorStop(0.5, '#92d6dc');
-    grad.addColorStop(1, '#a6e1e6');
+    grad.addColorStop(0, "#b6e9ec");
+    grad.addColorStop(0.5, "#92d6dc");
+    grad.addColorStop(1, "#a6e1e6");
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, s, s);
 
     // Subtle hazy methane bands
     for (let y = 0; y < s; y += 8) {
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
       ctx.fillRect(0, y, s, 4);
     }
   });
@@ -461,9 +478,9 @@ export function createUranusTexture(): THREE.CanvasTexture {
 export function createNeptuneTexture(): THREE.CanvasTexture {
   return createProceduralTexture(512, (ctx, s) => {
     const grad = ctx.createLinearGradient(0, 0, 0, s);
-    grad.addColorStop(0, '#2e63cc');
-    grad.addColorStop(0.5, '#3b78e7');
-    grad.addColorStop(1, '#244fa3');
+    grad.addColorStop(0, "#2e63cc");
+    grad.addColorStop(0.5, "#3b78e7");
+    grad.addColorStop(1, "#244fa3");
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, s, s);
 
@@ -472,7 +489,7 @@ export function createNeptuneTexture(): THREE.CanvasTexture {
       const sx = Math.random() * s;
       const sy = Math.random() * s;
       const sw = 50 + Math.random() * 120;
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
       ctx.lineWidth = 1.8;
       ctx.beginPath();
       ctx.moveTo(sx, sy);
@@ -481,7 +498,7 @@ export function createNeptuneTexture(): THREE.CanvasTexture {
     }
 
     // Small dark storm spot
-    ctx.fillStyle = 'rgba(15, 35, 95, 0.6)';
+    ctx.fillStyle = "rgba(15, 35, 95, 0.6)";
     ctx.beginPath();
     ctx.ellipse(s * 0.45, s * 0.58, 22, 12, 0.2, 0, Math.PI * 2);
     ctx.fill();
@@ -491,10 +508,10 @@ export function createNeptuneTexture(): THREE.CanvasTexture {
 // ----------------- ASTEROID TEXTURE -----------------
 export function createAsteroidTexture(): THREE.CanvasTexture {
   return createProceduralTexture(128, (ctx, s) => {
-    ctx.fillStyle = '#686560';
+    ctx.fillStyle = "#686560";
     ctx.fillRect(0, 0, s, s);
     for (let i = 0; i < 40; i++) {
-      ctx.fillStyle = Math.random() > 0.5 ? 'rgba(30,30,30,0.3)' : 'rgba(180,180,180,0.2)';
+      ctx.fillStyle = Math.random() > 0.5 ? "rgba(30,30,30,0.3)" : "rgba(180,180,180,0.2)";
       ctx.beginPath();
       ctx.arc(Math.random() * s, Math.random() * s, 1 + Math.random() * 5, 0, Math.PI * 2);
       ctx.fill();

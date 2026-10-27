@@ -1,35 +1,35 @@
-import * as THREE from 'three';
-import { store, type Phase } from '../state/store';
-import { audio } from './audio';
-import type { Scene } from './utils';
-import { HomeScene } from './scenes/home';
-import { HubScene } from './scenes/hub';
-import { MarsScene } from './scenes/marsFocus';
-import { MarsCinematicScene } from './scenes/cinematic';
-import { MarsWorldScene } from './scenes/marsWorld';
-import { StoryScene } from './scenes/story';
-import { InspectScene } from './scenes/inspect';
-import { CompleteScene } from './scenes/complete';
+import * as THREE from "three";
+import { store, type Phase } from "../state/store";
+import { audio } from "./audio";
+import type { Scene } from "./utils";
+import { HomeScene } from "./scenes/home";
+import { HubScene } from "./scenes/hub";
+import { MarsScene } from "./scenes/marsFocus";
+import { MarsCinematicScene } from "./scenes/cinematic";
+import { MarsWorldScene } from "./scenes/marsWorld";
+import { StoryScene } from "./scenes/story";
+import { InspectScene } from "./scenes/inspect";
+import { CompleteScene } from "./scenes/complete";
 
 function makeScene(phase: Phase, renderer: THREE.WebGLRenderer): Scene | null {
   switch (phase) {
-    case 'home':
+    case "home":
       return new HomeScene(renderer);
-    case 'hub':
+    case "hub":
       return new HubScene(renderer);
-    case 'solar':
+    case "solar":
       return new MarsScene(renderer);
-    case 'map':
+    case "map":
       return new MarsScene(renderer, true);
-    case 'cinematic':
+    case "cinematic":
       return new MarsCinematicScene(renderer);
-    case 'explore':
+    case "explore":
       return new MarsWorldScene(renderer);
-    case 'story':
+    case "story":
       return new StoryScene(renderer);
-    case 'inspect':
+    case "inspect":
       return new InspectScene(renderer);
-    case 'complete':
+    case "complete":
       return new CompleteScene(renderer);
     default:
       return null;
@@ -57,43 +57,57 @@ export class Engine {
     this.renderer.toneMappingExposure = 1.1;
     container.appendChild(this.renderer.domElement);
 
-    window.addEventListener('resize', this.onResize);
+    window.addEventListener("resize", this.onResize);
     const el = this.renderer.domElement;
-    el.addEventListener('pointerdown', this.onPointerDown);
-    window.addEventListener('pointermove', this.onPointerMove);
-    window.addEventListener('pointerup', this.onPointerUp);
-    el.addEventListener('wheel', this.onWheel, { passive: false });
-    window.addEventListener('keydown', this.onKeyDown);
-    window.addEventListener('keyup', this.onKeyUp);
+    el.addEventListener("pointerdown", this.onPointerDown);
+    window.addEventListener("pointermove", this.onPointerMove);
+    window.addEventListener("pointerup", this.onPointerUp);
+    el.addEventListener("wheel", this.onWheel, { passive: false });
+    window.addEventListener("keydown", this.onKeyDown);
+    window.addEventListener("keyup", this.onKeyUp);
 
     // UI -> engine transitions
-    this.disposers.push(store.on('engine:goto', (d) => this.transitionTo(d as Phase)));
-    this.onBus('start', () => {
-      audio.play('space');
-      this.transitionTo('hub');
+    this.disposers.push(store.on("engine:goto", (d) => this.transitionTo(d as Phase)));
+    this.onBus("start", () => {
+      audio.play("space");
+      this.transitionTo("hub");
     });
-    this.onBus('hub:newgame', () => {
+    this.onBus("hub:newgame", () => {
       store.set({ showChoice: false, current: null, queue: [], choices: null });
-      this.transitionTo('cinematic');
+      this.transitionTo("cinematic");
     });
-    this.onBus('choose:mars', () => {
+    this.onBus("choose:mars", () => {
       store.set({ showChoice: false, current: null, queue: [], choices: null });
-      this.transitionTo('cinematic');
+      this.transitionTo("cinematic");
     });
-    this.onBus('hearStory', () => this.transitionTo('story'));
-    this.onBus('storyFinished', () => {
+    this.onBus("hearStory", () => this.transitionTo("story"));
+    this.onBus("storyFinished", () => {
       store.set({ storyDone: true, showStory: false });
-      this.transitionTo('explore');
+      this.transitionTo("explore");
     });
-    this.onBus('openInspect', () => this.transitionTo('inspect'));
-    this.onBus('finishInspect', () => this.transitionTo('complete'));
-    this.onBus('nextChapter', () => this.transitionTo('hub'));
-    this.onBus('toSolar', () => this.transitionTo('solar'));
-    this.onBus('replay', () => this.transitionTo('cinematic'));
+    this.onBus("openInspect", () => this.transitionTo("inspect"));
+    this.onBus("finishInspect", () => this.transitionTo("complete"));
+    this.onBus("nextChapter", () => this.transitionTo("hub"));
+    this.onBus("toSolar", () => this.transitionTo("solar"));
+    this.onBus("replay", () => this.transitionTo("cinematic"));
 
     // dev aid: ?phase=explore
-    const forced = new URLSearchParams(location.search).get('phase') as Phase | null;
-    const initial: Phase = forced && ['home', 'hub', 'solar', 'cinematic', 'explore', 'story', 'inspect', 'complete', 'map'].includes(forced) ? forced : 'home';
+    const forced = new URLSearchParams(location.search).get("phase") as Phase | null;
+    const initial: Phase =
+      forced &&
+      [
+        "home",
+        "hub",
+        "solar",
+        "cinematic",
+        "explore",
+        "story",
+        "inspect",
+        "complete",
+        "map",
+      ].includes(forced)
+        ? forced
+        : "home";
     this.setPhase(initial);
     store.set({ phase: initial });
     this.loop();
@@ -174,11 +188,11 @@ export class Engine {
     cancelAnimationFrame(this.rafId);
     this.scene?.dispose();
     this.disposers.forEach((d) => d());
-    window.removeEventListener('resize', this.onResize);
-    window.removeEventListener('pointermove', this.onPointerMove);
-    window.removeEventListener('pointerup', this.onPointerUp);
-    window.removeEventListener('keydown', this.onKeyDown);
-    window.removeEventListener('keyup', this.onKeyUp);
+    window.removeEventListener("resize", this.onResize);
+    window.removeEventListener("pointermove", this.onPointerMove);
+    window.removeEventListener("pointerup", this.onPointerUp);
+    window.removeEventListener("keydown", this.onKeyDown);
+    window.removeEventListener("keyup", this.onKeyUp);
     this.renderer.dispose();
     if (this.renderer.domElement.parentElement === this.container) {
       this.container.removeChild(this.renderer.domElement);

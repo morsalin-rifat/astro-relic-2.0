@@ -1,29 +1,45 @@
-import * as THREE from 'three';
-import { buildCartoonNova, type NovaCharacter } from './novaCharacter';
+import * as THREE from "three";
+import { buildCartoonNova, type NovaCharacter } from "./novaCharacter";
 
 // ---------- Sojourner rover (procedural, ~1:1 proportions) ----------
 export function buildSojourner(): { group: THREE.Group; parts: Record<string, THREE.Object3D> } {
   const g = new THREE.Group();
   const parts: Record<string, THREE.Object3D> = {};
 
-  const bodyMat = new THREE.MeshStandardMaterial({ color: 0xc9c4b8, roughness: 0.6, metalness: 0.35 });
-  const darkMat = new THREE.MeshStandardMaterial({ color: 0x3a3a40, roughness: 0.8, metalness: 0.2 });
-  const panelMat = new THREE.MeshStandardMaterial({ color: 0x1c3a6e, roughness: 0.35, metalness: 0.6 });
-  const wheelMat = new THREE.MeshStandardMaterial({ color: 0x8f8a80, roughness: 0.85, metalness: 0.4 });
+  const bodyMat = new THREE.MeshStandardMaterial({
+    color: 0xc9c4b8,
+    roughness: 0.6,
+    metalness: 0.35,
+  });
+  const darkMat = new THREE.MeshStandardMaterial({
+    color: 0x3a3a40,
+    roughness: 0.8,
+    metalness: 0.2,
+  });
+  const panelMat = new THREE.MeshStandardMaterial({
+    color: 0x1c3a6e,
+    roughness: 0.35,
+    metalness: 0.6,
+  });
+  const wheelMat = new THREE.MeshStandardMaterial({
+    color: 0x8f8a80,
+    roughness: 0.85,
+    metalness: 0.4,
+  });
 
   // chassis
   const body = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.18, 0.48), bodyMat);
   body.position.y = 0.42;
   body.castShadow = true;
   g.add(body);
-  parts['body'] = body;
+  parts["body"] = body;
 
   // solar panel top
   const panel = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.02, 0.44), panelMat);
   panel.position.y = 0.52;
   panel.castShadow = true;
   g.add(panel);
-  parts['power'] = panel;
+  parts["power"] = panel;
   // panel grid lines
   const gridMat = new THREE.MeshBasicMaterial({ color: 0x2a4f92 });
   for (let i = -2; i <= 2; i++) {
@@ -55,7 +71,7 @@ export function buildSojourner(): { group: THREE.Group; parts: Record<string, TH
     wheelGroup.add(arm);
   });
   g.add(wheelGroup);
-  parts['wheels'] = wheelGroup;
+  parts["wheels"] = wheelGroup;
 
   // mast + camera head (front)
   const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.42, 8), darkMat);
@@ -68,7 +84,11 @@ export function buildSojourner(): { group: THREE.Group; parts: Record<string, TH
   head.add(headBox);
   const lensGeo = new THREE.CylinderGeometry(0.018, 0.018, 0.02, 12);
   lensGeo.rotateX(Math.PI / 2);
-  const lensMat = new THREE.MeshStandardMaterial({ color: 0x101018, roughness: 0.2, metalness: 0.8 });
+  const lensMat = new THREE.MeshStandardMaterial({
+    color: 0x101018,
+    roughness: 0.2,
+    metalness: 0.8,
+  });
   [-0.035, 0.035].forEach((x) => {
     const lens = new THREE.Mesh(lensGeo, lensMat);
     lens.position.set(x, 0, 0.045);
@@ -76,7 +96,7 @@ export function buildSojourner(): { group: THREE.Group; parts: Record<string, TH
   });
   head.position.set(0, 0.94, 0.18);
   g.add(head);
-  parts['cameras'] = head;
+  parts["cameras"] = head;
 
   // rear color camera
   const rearCam = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.05, 0.04), darkMat);
@@ -91,7 +111,7 @@ export function buildSojourner(): { group: THREE.Group; parts: Record<string, TH
   const lg = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.02, 0.08, 12), bodyMat);
   lg.position.set(-0.24, 0.55, 0.16);
   g.add(lg);
-  parts['comms'] = whip;
+  parts["comms"] = whip;
 
   // APXS deployment arm (small cylinder front-right)
   const apxs = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.1, 8), darkMat);
@@ -122,7 +142,10 @@ export function buildExplorer(): THREE.Group {
   head.position.y = 1.22;
   head.castShadow = true;
   g.add(head);
-  const visor = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 16, -Math.PI / 2.6, Math.PI / 1.3, Math.PI / 4, Math.PI / 2), visorMat);
+  const visor = new THREE.Mesh(
+    new THREE.SphereGeometry(0.16, 20, 16, -Math.PI / 2.6, Math.PI / 1.3, Math.PI / 4, Math.PI / 2),
+    visorMat,
+  );
   visor.position.set(0, 1.22, 0.06);
   g.add(visor);
 
@@ -156,12 +179,12 @@ export function buildExplorer(): THREE.Group {
   g.add(ant);
   const tip = new THREE.Mesh(
     new THREE.SphereGeometry(0.02, 8, 8),
-    new THREE.MeshBasicMaterial({ color: 0xffd97d })
+    new THREE.MeshBasicMaterial({ color: 0xffd97d }),
   );
   tip.position.set(0.1, 1.53, 0);
   g.add(tip);
 
-  g.userData['limbs'] = { legL, legR, armL, armR };
+  g.userData["limbs"] = { legL, legR, armL, armR };
   return g;
 }
 
@@ -175,25 +198,25 @@ export function buildFlag(): { group: THREE.Group; cloth: THREE.Mesh } {
   const g = new THREE.Group();
   const pole = new THREE.Mesh(
     new THREE.CylinderGeometry(0.03, 0.03, 3.4, 8),
-    new THREE.MeshStandardMaterial({ color: 0x9a958a, roughness: 0.5, metalness: 0.6 })
+    new THREE.MeshStandardMaterial({ color: 0x9a958a, roughness: 0.5, metalness: 0.6 }),
   );
   pole.position.y = 1.7;
   pole.castShadow = true;
   g.add(pole);
 
   const clothGeo = new THREE.PlaneGeometry(1.5, 0.9, 16, 8);
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = 256;
   canvas.height = 154;
-  const ctx = canvas.getContext('2d')!;
-  ctx.fillStyle = '#c1543a';
+  const ctx = canvas.getContext("2d")!;
+  ctx.fillStyle = "#c1543a";
   ctx.fillRect(0, 0, 256, 154);
-  ctx.fillStyle = '#f3e9d7';
+  ctx.fillStyle = "#f3e9d7";
   ctx.font = '700 34px "Space Grotesk", sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('1997', 128, 70);
+  ctx.textAlign = "center";
+  ctx.fillText("1997", 128, 70);
   ctx.font = '500 16px "IBM Plex Mono", monospace';
-  ctx.fillText('PATHFINDER · SOJOURNER', 128, 108);
+  ctx.fillText("PATHFINDER · SOJOURNER", 128, 108);
   const tex = new THREE.CanvasTexture(canvas);
   tex.colorSpace = THREE.SRGBColorSpace;
   const cloth = new THREE.Mesh(
@@ -205,7 +228,7 @@ export function buildFlag(): { group: THREE.Group; cloth: THREE.Mesh } {
       emissiveIntensity: 0.45,
       side: THREE.DoubleSide,
       roughness: 0.9,
-    })
+    }),
   );
   cloth.castShadow = true;
   g.add(cloth);

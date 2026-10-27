@@ -1,5 +1,5 @@
-import { store, useGame, t } from '../state/store';
-import { UI } from '../data/content';
+import { store, useGame, t } from "../state/store";
+import { UI } from "../data/content";
 
 export function SolarHUD() {
   const phase = useGame((s) => s.phase);
@@ -9,15 +9,15 @@ export function SolarHUD() {
   const tutorialDone = useGame((s) => s.tutorialDone);
   const showChoice = useGame((s) => s.showChoice);
 
-  if (phase !== 'solar' && phase !== 'map') return null;
+  if (phase !== "solar" && phase !== "map") return null;
 
-  const selectWorld = (id: 'Mars' | 'Moon' | null) => {
-    store.emit('solar:selectPlanet', id);
+  const selectWorld = (id: "Mars" | "Moon" | null) => {
+    store.emit("solar:selectPlanet", id);
   };
 
   const launchMars = () => {
     store.set({ showChoice: false, current: null, queue: [] });
-    store.emit('choose:mars');
+    store.emit("choose:mars");
   };
 
   const toggleOrbitSpeed = () => {
@@ -42,17 +42,17 @@ export function SolarHUD() {
               NOVA AI GUIDE
             </div>
             <div className="text-xs sm:text-sm font-bold tracking-[0.15em] text-[#f3ede0] uppercase">
-              {selectedPlanetId === 'Mars'
-                ? lang === 'bn'
-                  ? 'টার্গেট: মঙ্গল গ্রহ'
-                  : 'TARGET: MARS'
-                : selectedPlanetId === 'Moon'
-                ? lang === 'bn'
-                  ? 'টার্গেট: চাঁদ'
-                  : 'TARGET: THE MOON'
-                : lang === 'bn'
-                ? 'গন্তব্য বেছে নিন'
-                : 'CHOOSE DESTINATION'}
+              {selectedPlanetId === "Mars"
+                ? lang === "bn"
+                  ? "টার্গেট: মঙ্গল গ্রহ"
+                  : "TARGET: MARS"
+                : selectedPlanetId === "Moon"
+                  ? lang === "bn"
+                    ? "টার্গেট: চাঁদ"
+                    : "TARGET: THE MOON"
+                  : lang === "bn"
+                    ? "গন্তব্য বেছে নিন"
+                    : "CHOOSE DESTINATION"}
             </div>
           </div>
         </div>
@@ -65,7 +65,7 @@ export function SolarHUD() {
               className="flex items-center gap-1.5 px-3 py-1.5 rounded text-[11px] font-medium tracking-wider text-white/80 hover:text-white bg-white/5 hover:bg-white/15 border border-white/10 transition-colors"
             >
               <span>↺</span>
-              <span>{lang === 'bn' ? 'সামগ্রিক দৃশ্য' : 'OVERVIEW'}</span>
+              <span>{lang === "bn" ? "সামগ্রিক দৃশ্য" : "OVERVIEW"}</span>
             </button>
           )}
 
@@ -73,8 +73,10 @@ export function SolarHUD() {
             onClick={toggleOrbitSpeed}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded text-[11px] font-medium tracking-wider text-white/80 hover:text-white bg-white/5 hover:bg-white/15 border border-white/10 transition-colors"
           >
-            <span>{orbitSpeed === 0 ? '⏸' : '▶'}</span>
-            <span>{orbitSpeed === 0 ? (lang === 'bn' ? 'স্থগিত' : 'PAUSED') : `${orbitSpeed}x`}</span>
+            <span>{orbitSpeed === 0 ? "⏸" : "▶"}</span>
+            <span>
+              {orbitSpeed === 0 ? (lang === "bn" ? "স্থগিত" : "PAUSED") : `${orbitSpeed}x`}
+            </span>
           </button>
         </div>
       </div>
@@ -84,16 +86,16 @@ export function SolarHUD() {
       <div className="pointer-events-auto absolute right-5 top-24 flex flex-col gap-3 w-[min(320px,88vw)]">
         {/* WORLD 1: MARS (Primary Destination) */}
         <div
-          onClick={() => selectWorld('Mars')}
+          onClick={() => selectWorld("Mars")}
           className={`cursor-pointer group relative p-4 rounded-xl border backdrop-blur-md transition-all duration-300 ${
-            selectedPlanetId === 'Mars'
-              ? 'bg-[#c1543a]/25 border-[#ffd97d] shadow-[0_0_25px_rgba(224,96,63,0.35)] scale-[1.02]'
-              : 'bg-black/65 border-[#c1543a]/40 hover:border-[#ffd97d]/80 hover:bg-[#c1543a]/15'
+            selectedPlanetId === "Mars"
+              ? "bg-[#c1543a]/25 border-[#ffd97d] shadow-[0_0_25px_rgba(224,96,63,0.35)] scale-[1.02]"
+              : "bg-black/65 border-[#c1543a]/40 hover:border-[#ffd97d]/80 hover:bg-[#c1543a]/15"
           }`}
         >
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[9px] font-bold tracking-[0.3em] uppercase px-2 py-0.5 rounded bg-[#c1543a] text-white">
-              {lang === 'bn' ? 'প্রথম অভিযান' : 'PRIMARY MISSION'}
+              {lang === "bn" ? "প্রথম অভিযান" : "PRIMARY MISSION"}
             </span>
             <span className="text-xs text-[#ffd97d] font-bold">🔴 1997</span>
           </div>
@@ -101,16 +103,14 @@ export function SolarHUD() {
           <h3 className="text-lg font-bold tracking-wider text-[#f3ede0] group-hover:text-white transition-colors">
             {t(UI.mars, lang)}
           </h3>
-          <p className="text-xs text-white/70 leading-relaxed mt-1">
-            {t(UI.marsDesc, lang)}
-          </p>
+          <p className="text-xs text-white/70 leading-relaxed mt-1">{t(UI.marsDesc, lang)}</p>
 
           <div className="mt-3 text-[10px] tracking-[0.25em] text-[#ffd97d] flex items-center gap-1.5">
             <span>🚩</span>
             <span>PATHFINDER · SOJOURNER</span>
           </div>
 
-          {selectedPlanetId === 'Mars' && (
+          {selectedPlanetId === "Mars" && (
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -119,33 +119,29 @@ export function SolarHUD() {
               className="mt-4 w-full py-2.5 px-4 bg-gradient-to-r from-[#e0603f] to-[#ff9d6b] hover:from-[#ff6b47] hover:to-[#ffb68d] text-black font-bold text-xs tracking-[0.25em] uppercase rounded shadow-lg transition-transform transform active:scale-95 flex items-center justify-center gap-2"
             >
               <span>🚀</span>
-              <span>{lang === 'bn' ? 'মঙ্গলে অবতরণ শুরু' : 'BEGIN MARS DESCENT'} →</span>
+              <span>{lang === "bn" ? "মঙ্গলে অবতরণ শুরু" : "BEGIN MARS DESCENT"} →</span>
             </button>
           )}
         </div>
 
         {/* WORLD 2: MOON (Chapter 02 - Locked) */}
         <div
-          onClick={() => selectWorld('Moon')}
+          onClick={() => selectWorld("Moon")}
           className={`cursor-pointer group relative p-4 rounded-xl border backdrop-blur-md transition-all duration-300 ${
-            selectedPlanetId === 'Moon'
-              ? 'bg-white/15 border-white/60 shadow-[0_0_20px_rgba(255,255,255,0.2)] scale-[1.02]'
-              : 'bg-black/50 border-white/10 hover:border-white/30 opacity-70 hover:opacity-90'
+            selectedPlanetId === "Moon"
+              ? "bg-white/15 border-white/60 shadow-[0_0_20px_rgba(255,255,255,0.2)] scale-[1.02]"
+              : "bg-black/50 border-white/10 hover:border-white/30 opacity-70 hover:opacity-90"
           }`}
         >
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[9px] font-bold tracking-[0.3em] uppercase px-2 py-0.5 rounded bg-white/10 text-white/70">
-              {lang === 'bn' ? 'অধ্যায় ০২' : 'CHAPTER 02'}
+              {lang === "bn" ? "অধ্যায় ০২" : "CHAPTER 02"}
             </span>
             <span className="text-xs text-white/50">🌙</span>
           </div>
 
-          <h3 className="text-lg font-bold tracking-wider text-white/80">
-            {t(UI.moon, lang)}
-          </h3>
-          <p className="text-xs text-white/50 leading-relaxed mt-1">
-            {t(UI.moonDesc, lang)}
-          </p>
+          <h3 className="text-lg font-bold tracking-wider text-white/80">{t(UI.moon, lang)}</h3>
+          <p className="text-xs text-white/50 leading-relaxed mt-1">{t(UI.moonDesc, lang)}</p>
 
           <div className="mt-3 text-[10px] tracking-[0.2em] text-white/40 flex items-center gap-1.5">
             <span>🔒</span>
@@ -159,21 +155,21 @@ export function SolarHUD() {
         {/* Subtle Game Interaction Hint */}
         <div className="pointer-events-auto bg-black/40 backdrop-blur-sm border border-white/5 px-4 py-2 rounded text-[10px] tracking-[0.25em] text-white/50">
           {selectedPlanetId
-            ? lang === 'bn'
-              ? 'মাউস দিয়ে ঘোরান • জুম ইন-আউট করুন'
-              : 'DRAG TO ROTATE WORLD • SCROLL TO ZOOM'
-            : lang === 'bn'
-            ? 'মঙ্গল বা চাঁদে ক্লিক করুন • চারপাশ দেখতে মাউস টানুন'
-            : 'CLICK MARS OR MOON • DRAG TO ROTATE SOLAR SYSTEM'}
+            ? lang === "bn"
+              ? "মাউস দিয়ে ঘোরান • জুম ইন-আউট করুন"
+              : "DRAG TO ROTATE WORLD • SCROLL TO ZOOM"
+            : lang === "bn"
+              ? "মঙ্গল বা চাঁদে ক্লিক করুন • চারপাশ দেখতে মাউস টানুন"
+              : "CLICK MARS OR MOON • DRAG TO ROTATE SOLAR SYSTEM"}
         </div>
 
         {/* Skip Tutorial Button */}
         {!tutorialDone && !showChoice && (
           <button
-            onClick={() => store.emit('skipTutorial')}
+            onClick={() => store.emit("skipTutorial")}
             className="pointer-events-auto text-[10px] tracking-[0.3em] text-white/40 hover:text-[#ffd97d] transition-colors pb-1"
           >
-            {lang === 'bn' ? 'টিউটোরিয়াল এড়িয়ে যান ▸▸' : 'SKIP GUIDE ▸▸'}
+            {lang === "bn" ? "টিউটোরিয়াল এড়িয়ে যান ▸▸" : "SKIP GUIDE ▸▸"}
           </button>
         )}
       </div>

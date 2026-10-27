@@ -1,15 +1,15 @@
-import * as THREE from 'three';
-import { store } from '../../state/store';
-import { audio } from '../audio';
-import { makeStarfield, makeCanvasTexture, type Scene } from '../utils';
-import { CINEMATIC_BEATS } from '../../data/content';
+import * as THREE from "three";
+import { store } from "../../state/store";
+import { audio } from "../audio";
+import { makeStarfield, makeCanvasTexture, type Scene } from "../utils";
+import { CINEMATIC_BEATS } from "../../data/content";
 import {
   buildPathfinderCruiseStage,
   buildSupersonicParachute,
   buildPathfinderAirbagCluster,
   buildEntryPlasmaShockwave,
-} from '../models/nasaPathfinderEdl';
-import { createHighFidelityMarsTexture, createMarsBumpTexture } from './marsFocus';
+} from "../models/nasaPathfinderEdl";
+import { createHighFidelityMarsTexture, createMarsBumpTexture } from "./marsFocus";
 
 const DURATION = 17.5; // Total authentic NASA EDL sequence duration
 
@@ -85,10 +85,10 @@ export class MarsCinematicScene implements Scene {
     // 2. High-Fidelity Martian Ground Terrain (revealed during final touchdown & bounce)
     const groundGeo = new THREE.PlaneGeometry(350, 350, 48, 48);
     const groundTex = makeCanvasTexture(512, (ctx, s) => {
-      ctx.fillStyle = '#b34728';
+      ctx.fillStyle = "#b34728";
       ctx.fillRect(0, 0, s, s);
       for (let i = 0; i < 300; i++) {
-        ctx.fillStyle = Math.random() > 0.5 ? 'rgba(70,20,10,0.35)' : 'rgba(230,130,80,0.25)';
+        ctx.fillStyle = Math.random() > 0.5 ? "rgba(70,20,10,0.35)" : "rgba(230,130,80,0.25)";
         ctx.beginPath();
         ctx.arc(Math.random() * s, Math.random() * s, 1 + Math.random() * 8, 0, Math.PI * 2);
         ctx.fill();
@@ -112,12 +112,12 @@ export class MarsCinematicScene implements Scene {
     this.surfaceRocks = new THREE.InstancedMesh(rockGeo, rockMat, rockCount);
     const dummy = new THREE.Object3D();
     for (let r = 0; r < rockCount; r++) {
-      dummy.position.set(
-        (Math.random() - 0.5) * 80,
-        -49.6,
-        -180 + (Math.random() - 0.5) * 80
+      dummy.position.set((Math.random() - 0.5) * 80, -49.6, -180 + (Math.random() - 0.5) * 80);
+      dummy.scale.set(
+        0.4 + Math.random() * 0.8,
+        0.3 + Math.random() * 0.6,
+        0.4 + Math.random() * 0.8,
       );
-      dummy.scale.set(0.4 + Math.random() * 0.8, 0.3 + Math.random() * 0.6, 0.4 + Math.random() * 0.8);
       dummy.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
       dummy.updateMatrix();
       this.surfaceRocks.setMatrixAt(r, dummy.matrix);
@@ -162,7 +162,7 @@ export class MarsCinematicScene implements Scene {
       pPos[i * 3 + 1] = (Math.random() - 0.5) * 6;
       pPos[i * 3 + 2] = (Math.random() - 0.5) * 12;
     }
-    plasmaGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+    plasmaGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
     this.plasmaStreamParticles = new THREE.Points(
       plasmaGeo,
       new THREE.PointsMaterial({
@@ -171,7 +171,7 @@ export class MarsCinematicScene implements Scene {
         transparent: true,
         opacity: 0,
         blending: THREE.AdditiveBlending,
-      })
+      }),
     );
     this.scene.add(this.plasmaStreamParticles);
 
@@ -184,7 +184,7 @@ export class MarsCinematicScene implements Scene {
       dPos[i * 3 + 1] = Math.random() * 8;
       dPos[i * 3 + 2] = (Math.random() - 0.5) * 20;
     }
-    dustGeo.setAttribute('position', new THREE.BufferAttribute(dPos, 3));
+    dustGeo.setAttribute("position", new THREE.BufferAttribute(dPos, 3));
     this.impactDustParticles = new THREE.Points(
       dustGeo,
       new THREE.PointsMaterial({
@@ -192,7 +192,7 @@ export class MarsCinematicScene implements Scene {
         size: 0.25,
         transparent: true,
         opacity: 0,
-      })
+      }),
     );
     this.impactDustParticles.position.set(0, -49, -180);
     this.scene.add(this.impactDustParticles);
@@ -208,7 +208,7 @@ export class MarsCinematicScene implements Scene {
     const ambient = new THREE.AmbientLight(0x221a18, 0.9);
     this.scene.add(ambient);
 
-    audio.play('space');
+    audio.play("space");
   }
 
   resize(w: number, h: number) {
@@ -242,7 +242,7 @@ export class MarsCinematicScene implements Scene {
       this.camera.position.set(
         Math.cos(T * 0.4) * 8,
         1.5 + Math.sin(T * 0.3) * 0.8,
-        this.spacecraftRoot.position.z + 7.5
+        this.spacecraftRoot.position.z + 7.5,
       );
       this.camera.lookAt(this.spacecraftRoot.position);
     }
@@ -259,14 +259,14 @@ export class MarsCinematicScene implements Scene {
       this.cruiseStageMesh.rotation.z += dt * 0.4;
 
       // Aeroshell pitches into atmospheric entry angle (facing heat shield forward)
-      this.aeroshellGroup.rotation.x = THREE.MathUtils.lerp(this.aeroshellGroup.rotation.x, Math.PI * 0.45, dt * 1.8);
+      this.aeroshellGroup.rotation.x = THREE.MathUtils.lerp(
+        this.aeroshellGroup.rotation.x,
+        Math.PI * 0.45,
+        dt * 1.8,
+      );
       this.spacecraftRoot.position.z -= dt * 12;
 
-      this.camera.position.set(
-        -4.5 + prog * 2,
-        2.2,
-        this.spacecraftRoot.position.z + 8.5
-      );
+      this.camera.position.set(-4.5 + prog * 2, 2.2, this.spacecraftRoot.position.z + 8.5);
       this.camera.lookAt(this.aeroshellGroup.position.clone().add(this.spacecraftRoot.position));
     }
 
@@ -280,7 +280,8 @@ export class MarsCinematicScene implements Scene {
       // Incandescent plasma fire intensity peaking at peak heating
       const heatIntensity = Math.sin(prog * Math.PI);
       this.plasmaFx.glowLight.intensity = heatIntensity * 25;
-      (this.plasmaFx.plasmaCone.material as THREE.MeshBasicMaterial).opacity = 0.6 + heatIntensity * 0.35;
+      (this.plasmaFx.plasmaCone.material as THREE.MeshBasicMaterial).opacity =
+        0.6 + heatIntensity * 0.35;
 
       // Stream of plasma sparks and ablated embers
       (this.plasmaStreamParticles.material as THREE.PointsMaterial).opacity = heatIntensity * 0.85;
@@ -296,7 +297,7 @@ export class MarsCinematicScene implements Scene {
       this.camera.position.set(
         this.spacecraftRoot.position.x + 3.5 + (Math.random() - 0.5) * shakeAmt,
         this.spacecraftRoot.position.y + 1.8 + (Math.random() - 0.5) * shakeAmt,
-        this.spacecraftRoot.position.z + 7.5
+        this.spacecraftRoot.position.z + 7.5,
       );
       this.camera.lookAt(this.spacecraftRoot.position);
     }
@@ -331,7 +332,7 @@ export class MarsCinematicScene implements Scene {
       this.camera.position.set(
         this.spacecraftRoot.position.x - 2.5,
         this.spacecraftRoot.position.y + 4.5,
-        this.spacecraftRoot.position.z + 10.0
+        this.spacecraftRoot.position.z + 10.0,
       );
       this.camera.lookAt(this.spacecraftRoot.position);
     }
@@ -358,11 +359,7 @@ export class MarsCinematicScene implements Scene {
       this.airbagCluster.position.set(0, Math.max(-48.8, dropY), dropZ);
 
       // Camera tracks airbag descent
-      this.camera.position.set(
-        5.5,
-        -46.0,
-        this.airbagCluster.position.z + 12.5
-      );
+      this.camera.position.set(5.5, -46.0, this.airbagCluster.position.z + 12.5);
       this.camera.lookAt(this.airbagCluster.position);
     }
 
@@ -382,7 +379,7 @@ export class MarsCinematicScene implements Scene {
       this.airbagCluster.position.set(
         Math.sin(bTime * 2) * 2.5,
         -48.8 + Math.abs(bounceHeight),
-        -180 + rollDist
+        -180 + rollDist,
       );
       this.airbagCluster.rotation.x += dt * 3.5;
       this.airbagCluster.rotation.z += dt * 2.2;
@@ -393,16 +390,12 @@ export class MarsCinematicScene implements Scene {
       } else {
         (this.impactDustParticles.material as THREE.PointsMaterial).opacity = Math.max(
           0,
-          (this.impactDustParticles.material as THREE.PointsMaterial).opacity - dt * 0.8
+          (this.impactDustParticles.material as THREE.PointsMaterial).opacity - dt * 0.8,
         );
       }
 
       // Camera follows airbag rolling to final resting position
-      this.camera.position.set(
-        8.0,
-        -46.5,
-        this.airbagCluster.position.z + 14.0
-      );
+      this.camera.position.set(8.0, -46.5, this.airbagCluster.position.z + 14.0);
       this.camera.lookAt(this.airbagCluster.position);
     }
 
@@ -417,7 +410,7 @@ export class MarsCinematicScene implements Scene {
     if (T > DURATION && !this.done) {
       this.done = true;
       store.set({ caption: null });
-      store.emit('engine:goto', 'explore');
+      store.emit("engine:goto", "explore");
     }
   }
 

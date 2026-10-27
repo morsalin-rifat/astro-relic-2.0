@@ -1,11 +1,11 @@
-import * as THREE from 'three';
-import { store } from '../../state/store';
-import { makeStarfield, fbm, type Scene } from '../utils';
-import { buildSojourner, buildNova } from '../models/builders';
-import { STORY } from '../../data/story';
-import { audio } from '../audio';
+import * as THREE from "three";
+import { store } from "../../state/store";
+import { makeStarfield, fbm, type Scene } from "../utils";
+import { buildSojourner, buildNova } from "../models/builders";
+import { STORY } from "../../data/story";
+import { audio } from "../audio";
 
-type CamMode = 'orbit' | 'low' | 'close' | 'top' | 'drift';
+type CamMode = "orbit" | "low" | "close" | "top" | "drift";
 
 export class StoryScene implements Scene {
   private renderer: THREE.WebGLRenderer;
@@ -13,7 +13,7 @@ export class StoryScene implements Scene {
   private camera: THREE.PerspectiveCamera;
   private rover: THREE.Group;
   private stars = makeStarfield(2500, 500);
-  private mode: CamMode = 'drift';
+  private mode: CamMode = "drift";
   private modeBlend = 0;
   private disposer: () => void;
 
@@ -33,7 +33,7 @@ export class StoryScene implements Scene {
     // terrain disc
     const geo = new THREE.CircleGeometry(60, 96, 0, Math.PI * 2);
     geo.rotateX(-Math.PI / 2);
-    const pos = geo.attributes['position'] as THREE.BufferAttribute;
+    const pos = geo.attributes["position"] as THREE.BufferAttribute;
     const colors = new Float32Array(pos.count * 3);
     const base = new THREE.Color(0x8a4426);
     const light = new THREE.Color(0xb86a42);
@@ -48,9 +48,12 @@ export class StoryScene implements Scene {
       colors[i * 3 + 1] = c.g;
       colors[i * 3 + 2] = c.b;
     }
-    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
     geo.computeVertexNormals();
-    const terrain = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1 }));
+    const terrain = new THREE.Mesh(
+      geo,
+      new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1 }),
+    );
     terrain.receiveShadow = true;
     this.scene.add(terrain);
 
@@ -66,15 +69,15 @@ export class StoryScene implements Scene {
     nova.group.position.set(2.5, 1.8, 2);
     this.scene.add(nova.group);
 
-    audio.play('mars');
+    audio.play("mars");
 
-    this.disposer = store.on('story:chapter', (d) => {
-      this.mode = (d as CamMode) ?? 'orbit';
+    this.disposer = store.on("story:chapter", (d) => {
+      this.mode = (d as CamMode) ?? "orbit";
       this.modeBlend = 0;
     });
 
     store.set({ showStory: true, storyIndex: 0 });
-    this.mode = STORY[0]?.camera ?? 'orbit';
+    this.mode = STORY[0]?.camera ?? "orbit";
   }
 
   resize(w: number, h: number) {
@@ -90,21 +93,21 @@ export class StoryScene implements Scene {
     let targetPos: THREE.Vector3;
     let lookAt = roverPos;
     switch (this.mode) {
-      case 'drift':
+      case "drift":
         targetPos = new THREE.Vector3(Math.sin(t * 0.06) * 16, 7, Math.cos(t * 0.06) * 16);
         break;
-      case 'low':
+      case "low":
         targetPos = new THREE.Vector3(Math.sin(t * 0.05) * 3, 0.7, 5 + Math.cos(t * 0.07));
         lookAt = roverPos.clone().add(new THREE.Vector3(0, 0.4, 0));
         break;
-      case 'orbit':
+      case "orbit":
         targetPos = new THREE.Vector3(Math.sin(t * 0.12) * 7, 3.2, Math.cos(t * 0.12) * 7);
         break;
-      case 'close':
+      case "close":
         targetPos = new THREE.Vector3(1.8 + Math.sin(t * 0.15) * 0.4, 1.6, 2.4);
         lookAt = roverPos.clone().add(new THREE.Vector3(0, 0.7, 0.3));
         break;
-      case 'top':
+      case "top":
         targetPos = new THREE.Vector3(0, 6 + t * 0.06, 3.5);
         break;
     }

@@ -1,10 +1,10 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { store } from '../../state/store';
-import { makeStarfield, type Scene } from '../utils';
-import { buildSojourner } from '../models/builders';
-import { HOTSPOTS } from '../../data/story';
-import { UI } from '../../data/content';
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { store } from "../../state/store";
+import { makeStarfield, type Scene } from "../utils";
+import { buildSojourner } from "../models/builders";
+import { HOTSPOTS } from "../../data/story";
+import { UI } from "../../data/content";
 
 export class InspectScene implements Scene {
   private renderer: THREE.WebGLRenderer;
@@ -34,7 +34,7 @@ export class InspectScene implements Scene {
     // pedestal ground
     const ground = new THREE.Mesh(
       new THREE.CircleGeometry(6, 48),
-      new THREE.MeshStandardMaterial({ color: 0x1c1410, roughness: 1 })
+      new THREE.MeshStandardMaterial({ color: 0x1c1410, roughness: 1 }),
     );
     ground.rotation.x = -Math.PI / 2;
     ground.receiveShadow = true;
@@ -52,21 +52,26 @@ export class InspectScene implements Scene {
     HOTSPOTS.forEach((h) => {
       const m = new THREE.Mesh(
         new THREE.SphereGeometry(0.06, 12, 10),
-        new THREE.MeshBasicMaterial({ color: 0xffd97d, transparent: true, opacity: 0.9 })
+        new THREE.MeshBasicMaterial({ color: 0xffd97d, transparent: true, opacity: 0.9 }),
       );
       m.position.set(h.pos[0] * 2.4, h.pos[1] * 2.4, h.pos[2] * 2.4);
       m.name = `hotspot:${h.id}`;
       // halo ring
       const halo = new THREE.Mesh(
         new THREE.RingGeometry(0.09, 0.12, 24),
-        new THREE.MeshBasicMaterial({ color: 0xffd97d, transparent: true, opacity: 0.5, side: THREE.DoubleSide })
+        new THREE.MeshBasicMaterial({
+          color: 0xffd97d,
+          transparent: true,
+          opacity: 0.5,
+          side: THREE.DoubleSide,
+        }),
       );
       halo.name = `halo:${h.id}`;
       m.add(halo);
       // generous invisible hit area (child-friendly clicking)
       const hit = new THREE.Mesh(
         new THREE.SphereGeometry(0.22, 8, 6),
-        new THREE.MeshBasicMaterial({ visible: false })
+        new THREE.MeshBasicMaterial({ visible: false }),
       );
       hit.name = `hit:${h.id}`;
       m.add(hit);
@@ -87,14 +92,17 @@ export class InspectScene implements Scene {
 
   onClick(x: number, y: number) {
     this.raycaster.setFromCamera(new THREE.Vector2(x, y), this.camera);
-    const hits = this.raycaster.intersectObjects(this.markers.map((m) => m.mesh), true);
+    const hits = this.raycaster.intersectObjects(
+      this.markers.map((m) => m.mesh),
+      true,
+    );
     if (hits.length === 0) return;
     const hit = hits[0];
     if (!hit) return;
     let obj: THREE.Object3D | null = hit.object;
-    while (obj && !obj.name.startsWith('hotspot:')) obj = obj.parent;
+    while (obj && !obj.name.startsWith("hotspot:")) obj = obj.parent;
     if (!obj) return;
-    const id = obj.name.split(':')[1];
+    const id = obj.name.split(":")[1];
     if (!id) return;
     const visited = store.get().visitedHotspots;
     store.set({
@@ -122,7 +130,12 @@ export class InspectScene implements Scene {
     // debug hook for E2E tests
     (window as any).__hotspots = this.markers.map(({ id, mesh }) => {
       const v = mesh.position.clone().project(this.camera);
-      return { id, x: ((v.x + 1) / 2) * innerWidth, y: ((1 - v.y) / 2) * innerHeight, behind: v.z > 1 };
+      return {
+        id,
+        x: ((v.x + 1) / 2) * innerWidth,
+        y: ((1 - v.y) / 2) * innerHeight,
+        behind: v.z > 1,
+      };
     });
     this.renderer.render(this.scene, this.camera);
   }
