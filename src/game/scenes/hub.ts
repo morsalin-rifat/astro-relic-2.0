@@ -171,7 +171,7 @@ export class HubScene implements Scene {
     this.renderer = renderer;
     this.camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 2000);
     this.camera.position.set(0, 2.4, 12);
-    this.camera.lookAt(0, 2.8, -40);
+    this.camera.lookAt(0, -2.2, -40);
     this.scene.background = new THREE.Color(0x0a0508);
     this.scene.fog = new THREE.Fog(0x140a08, 55, 190);
 
@@ -352,7 +352,7 @@ export class HubScene implements Scene {
     const k = 1 - Math.exp(-3.5 * dt);
     this.camera.position.x += (this.mouse.x * 2.6 - this.camera.position.x) * k;
     this.camera.position.y += (2.4 + this.mouse.y * 1.2 - this.camera.position.y) * k;
-    this.camera.lookAt(0, 2.8, -40);
+    this.camera.lookAt(0, -2.2, -40);
 
     // haze breathing
     (this.haze.material as THREE.SpriteMaterial).opacity =
