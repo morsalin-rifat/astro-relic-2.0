@@ -56,4 +56,19 @@ Lovable ⇄ GitHub (code bank) ⇄ Google AI Studio / Cursor. Work in one tool a
 - [x] Project migrated from github.com/morsalin-rifat/astro-relic
 - [x] 1a Top telemetry bar (DSN ONLINE, FREQ 8.4 GHz, RELIC PROTOCOL V2.4 · SOL 001 · ARES VALLIS · live UTC clock · sound waveform toggle + BN/EN switch; audio.beep() UI blip; strings in TELEMETRY in content.ts; .telemetry-bar/wave/blinkdot in styles.css) — homepage only, compact at 393px
 - [x] 1b Home screen REDESIGNED — "Magical Interactive Starfield" (replaces old Earth/solar home): GPU twinkle shader stars, mouse-reactive near stars (brighten + drift + stardust trail), periodic shooting star, glowing procedural Mars, Nova bot waving bottom-right, camera parallax; new HomeUI: badge "A NASA SPACE APPS STORY ADVENTURE", floating glow ASTRO RELIC title, tagline EN+BN, glowing pulsing "START ADVENTURE / মহাকাশ যাত্রা শুরু" button (hover beep), star-play hint; styles: .astro-badge/.astro-title/.cta-adventure + keyframes titlefloat/cta-pulse; flow unchanged (start → journey choice → cinematic). Old cta/ctaSub strings kept for other references.
-- [ ] 2. Universe screen (Mars/Moon choose) + Nova tutorial (next)
+- [~] 2. Mission Command Hub (phase `hub`, after START ADVENTURE) — Pragmata-style AAA menu
+  - DONE: `src/game/scenes/hub.ts` (starfield, glowing Earth + fresnel atmosphere, Mars/Moon terrain, rocks, haze, parallax, live universe swap by polling `store.get().universe`); store `universe: 'mars'|'moon'`; engine: start→hub, `hub:newgame`→cinematic, nextChapter→hub; HUB/HOWTO/CHAPTERS strings in content.ts; first `HubUI` in Overlays.tsx (menu, Nova bubble, chapters panel, how-to-play, reset).
+  - FIXED: HubScene.update() now calls renderer.render (was missing → frozen 3D).
+  - TODO (next agent, in order):
+    a. Camera: look lower so terrain fills bottom third (terrain y≈-3.6); smooth spring parallax.
+    b. Mars: drifting red dust particles; Moon: big rotating Earth, crater detail.
+    c. Universe switch = smooth cinematic tween (lights/fog/colors/Earth pos over ~1.2s), not instant.
+    d. Menu redesign: right side, minimal text `[ 01 // NEW EXPEDITION ]`, `[ 02 // CHAPTER ARCHIVES ]`, `[ 03 // FIELD MANUAL ]`, `[ 04 // SYSTEM PURGE ]` — hover neon underline + sub-info + beep + slight camera zoom; no heavy boxes covering 3D.
+    e. Top slim capsule toggle `[ MARS EXPEDITION | MOON EXPEDITION ]`.
+    f. Reset: red glitch confirm. How-to-play: Nova hologram card.
+    g. Responsive 393px + 1280px, EN+BN.
+- [ ] 3. Chapter Journey Map (AAA, Death Stranding/Horizon style): mountaintop vista, glowing trail through valley, GPU-wind cloth flags with beacon rings per chapter, click = camera dolly + DOF, glass hologram briefing card + [INITIATE MISSION], unlock shockwave along trail. Mars chapters: Pathfinder/Sojourner 1997, Opportunity 2004, Spirit 2004. Moon: Apollo 11 1969, Apollo 15 LRV, Artemis.
+- [ ] 4. Cinematic descent → Level 1 surface exploration → GTA-style choices with real NASA facts → flag raising.
+
+## Dual universe rule
+Mars and Moon share ONE engine/mechanics/controls; only visuals, gravity (Mars 0.38g, Moon 0.16g), chapters and Nova lines differ.

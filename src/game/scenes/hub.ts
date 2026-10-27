@@ -357,6 +357,8 @@ export class HubScene implements Scene {
     // haze breathing
     (this.haze.material as THREE.SpriteMaterial).opacity =
       this.hazeBase + Math.sin(elapsed * 0.6) * 0.05;
+
+    this.renderer.render(this.scene, this.camera);
   }
 
   onPointerMove(x: number, y: number) {
