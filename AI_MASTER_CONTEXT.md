@@ -59,6 +59,19 @@ Lovable ⇄ GitHub (code bank) ⇄ Google AI Studio / Cursor. Work in one tool a
 - [~] 2. Mission Command Hub (phase `hub`, after START ADVENTURE) — Pragmata-style AAA menu
   - DONE: `src/game/scenes/hub.ts` (starfield, glowing Earth + fresnel atmosphere, Mars/Moon terrain, rocks, haze, parallax, live universe swap by polling `store.get().universe`); store `universe: 'mars'|'moon'`; engine: start→hub, `hub:newgame`→cinematic, nextChapter→hub; HUB/HOWTO/CHAPTERS strings in content.ts; first `HubUI` in Overlays.tsx (menu, Nova bubble, chapters panel, how-to-play, reset).
   - FIXED: HubScene.update() now calls renderer.render (was missing → frozen 3D).
+  - APPROVED "Living Hub" visual suite (all background/horizon only, never cover menu, mobile 60fps):
+    1. DONE twinkling near-star layer + mouse parallax/brighten (`hubSky.ts`)
+    2. DONE shooting stars every 8–14s
+    3. DONE distant horizon meteor strike (flash + dust ring), never toward camera
+    4. TODO click ground → holographic scan ring + NASA data tag (Mars basalt/iron oxide, Moon regolith/titanium)
+    5. TODO click Earth/planet → orbit ring + distance/signal-delay tag
+    6. DONE blinking distant rover beacon
+    7. DONE floating dust (Mars wind drift, Moon slow float); TODO dust devils
+    8. DONE pale sun with blue halo on Mars (real Curiosity blue sunset); TODO hex lens flare on hover
+    9. TODO rover wheel tracks (Mars) + Apollo bootprints/LRV tracks (Moon) with dust blowing over
+    10. TODO Nova looks toward cursor, waves when idle
+    11. TODO idle 20–25s → cinematic drone camera flyby, menu fades; any input returns
+    - REJECTED: solar-storm UI glitch, radio static sounds.
   - TODO (next agent, in order):
     a. Camera: look lower so terrain fills bottom third (terrain y≈-3.6); smooth spring parallax.
     b. Mars: drifting red dust particles; Moon: big rotating Earth, crater detail.

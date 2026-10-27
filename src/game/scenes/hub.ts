@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { makeGlowTexture, makeCanvasTexture, fbm, makeStarfield, type Scene } from "../utils";
 import { store } from "../../state/store";
+import { HubSky } from "./hubSky";
 
 type Universe = "mars" | "moon";
 
@@ -166,6 +167,7 @@ export class HubScene implements Scene {
   private hemi: THREE.HemisphereLight;
   private dir: THREE.DirectionalLight;
   private hazeBase = 0.5;
+  private sky = new HubSky();
 
   constructor(renderer: THREE.WebGLRenderer) {
     this.renderer = renderer;
@@ -305,6 +307,8 @@ export class HubScene implements Scene {
     this.dir.position.set(-18, 22, -8);
     this.scene.add(this.hemi, this.dir);
 
+    this.scene.add(this.sky.group);
+    this.disposables.push(this.sky);
     this.applyUniverse(store.get().universe);
   }
 
@@ -315,6 +319,7 @@ export class HubScene implements Scene {
     this.marsRocks.visible = mars;
     this.moonTerrain.visible = !mars;
     this.moonRocks.visible = !mars;
+    this.sky.setUniverse(mars);
 
     const bg = this.scene.background as THREE.Color;
     const fog = this.scene.fog as THREE.Fog;
@@ -358,6 +363,7 @@ export class HubScene implements Scene {
     (this.haze.material as THREE.SpriteMaterial).opacity =
       this.hazeBase + Math.sin(elapsed * 0.6) * 0.05;
 
+    this.sky.update(dt, elapsed, this.mouse, this.universe === "mars" ? -3.6 : -3.4);
     this.renderer.render(this.scene, this.camera);
   }
 
