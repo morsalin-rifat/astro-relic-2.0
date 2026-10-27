@@ -142,8 +142,8 @@ export class HubSky {
   }
 
   update(dt: number, t: number, mouse: { x: number; y: number }, groundY: number) {
-    this.twMat.uniforms.uTime.value = t;
-    this.twMat.uniforms.uMouse.value.set(mouse.x, mouse.y);
+    this.twMat.uniforms["uTime"]!.value = t;
+    (this.twMat.uniforms["uMouse"]!.value as THREE.Vector2).set(mouse.x, mouse.y);
     this.twinkle.position.set(-mouse.x * 6, -mouse.y * 3, 0);
 
     // shooting star
@@ -156,7 +156,7 @@ export class HubSky {
     }
     if (this.cometT >= 0) {
       this.cometT += dt / 0.9;
-      const p = this.comet.geometry.attributes.position as THREE.BufferAttribute;
+      const p = this.comet.geometry.attributes["position"] as THREE.BufferAttribute;
       const head = this.cometFrom.clone().addScaledVector(this.cometDir, this.cometT);
       const tail = head.clone().addScaledVector(this.cometDir, -0.18);
       p.setXYZ(0, head.x, head.y, head.z);
@@ -206,7 +206,7 @@ export class HubSky {
     (this.beacon.material as THREE.SpriteMaterial).opacity = Math.sin(t * 3) > 0.6 ? 1 : 0.15;
 
     // dust drift (wind on Mars, slow float on Moon)
-    const p = this.dust.geometry.attributes.position as THREE.BufferAttribute;
+    const p = this.dust.geometry.attributes["position"] as THREE.BufferAttribute;
     const wind = this.mars ? 1.4 : 0.15;
     for (let i = 0; i < p.count; i++) {
       let x = p.getX(i) + dt * wind;
