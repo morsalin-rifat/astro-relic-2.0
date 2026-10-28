@@ -335,7 +335,9 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 240, 255, 0.08);
+  box-shadow:
+    0 10px 35px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(0, 240, 255, 0.08);
   border-radius: 9999px;
   padding: 0.3rem 0.4rem;
 }
@@ -356,7 +358,7 @@ body {
 }
 
 .hub-action-card::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0;
@@ -370,7 +372,9 @@ body {
   background: linear-gradient(90deg, rgba(255, 217, 125, 0.12), rgba(255, 217, 125, 0.02));
   border-color: rgba(255, 217, 125, 0.5);
   transform: translateX(-4px);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45), 0 0 22px rgba(255, 217, 125, 0.16);
+  box-shadow:
+    0 6px 24px rgba(0, 0, 0, 0.45),
+    0 0 22px rgba(255, 217, 125, 0.16);
 }
 
 .hub-action-card:hover::before {
@@ -438,7 +442,8 @@ body {
 }
 
 @keyframes novapulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow:
       0 0 0 2px rgba(0, 240, 255, 0.45),
       0 0 18px rgba(0, 240, 255, 0.35);

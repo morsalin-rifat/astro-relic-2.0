@@ -59,19 +59,6 @@ Lovable ⇄ GitHub (code bank) ⇄ Google AI Studio / Cursor. Work in one tool a
 - [~] 2. Mission Command Hub (phase `hub`, after START ADVENTURE) — Pragmata-style AAA menu
   - DONE: `src/game/scenes/hub.ts` (starfield, glowing Earth + fresnel atmosphere, Mars/Moon terrain, rocks, haze, parallax, live universe swap by polling `store.get().universe`); store `universe: 'mars'|'moon'`; engine: start→hub, `hub:newgame`→cinematic, nextChapter→hub; HUB/HOWTO/CHAPTERS strings in content.ts; first `HubUI` in Overlays.tsx (menu, Nova bubble, chapters panel, how-to-play, reset).
   - FIXED: HubScene.update() now calls renderer.render (was missing → frozen 3D).
-  - APPROVED "Living Hub" visual suite (all background/horizon only, never cover menu, mobile 60fps):
-    1. DONE twinkling near-star layer + mouse parallax/brighten (`hubSky.ts`)
-    2. DONE shooting stars every 8–14s
-    3. DONE distant horizon meteor strike (flash + dust ring), never toward camera
-    4. TODO click ground → holographic scan ring + NASA data tag (Mars basalt/iron oxide, Moon regolith/titanium)
-    5. TODO click Earth/planet → orbit ring + distance/signal-delay tag
-    6. DONE blinking distant rover beacon
-    7. DONE floating dust (Mars wind drift, Moon slow float); TODO dust devils
-    8. DONE pale sun with blue halo on Mars (real Curiosity blue sunset); TODO hex lens flare on hover
-    9. TODO rover wheel tracks (Mars) + Apollo bootprints/LRV tracks (Moon) with dust blowing over
-    10. TODO Nova looks toward cursor, waves when idle
-    11. TODO idle 20–25s → cinematic drone camera flyby, menu fades; any input returns
-    - REJECTED: solar-storm UI glitch, radio static sounds.
   - TODO (next agent, in order):
     a. Camera: look lower so terrain fills bottom third (terrain y≈-3.6); smooth spring parallax.
     b. Mars: drifting red dust particles; Moon: big rotating Earth, crater detail.
@@ -83,12 +70,6 @@ Lovable ⇄ GitHub (code bank) ⇄ Google AI Studio / Cursor. Work in one tool a
 - [ ] 3. Chapter Journey Map (AAA, Death Stranding/Horizon style): mountaintop vista, glowing trail through valley, GPU-wind cloth flags with beacon rings per chapter, click = camera dolly + DOF, glass hologram briefing card + [INITIATE MISSION], unlock shockwave along trail. Mars chapters: Pathfinder/Sojourner 1997, Opportunity 2004, Spirit 2004. Moon: Apollo 11 1969, Apollo 15 LRV, Artemis.
 - [ ] 4. Cinematic descent → Level 1 surface exploration → GTA-style choices with real NASA facts → flag raising.
 
-## Visual inspiration (user refs, Oct 2026) — INSPIRATION ONLY, NEVER COPY
-- Sci-fi HUD: huge outline watermark word (MARS/MOON) behind 3D, thin corner brackets, coordinates, live radio waveform "MISSION TRANSMISSION // SIGNAL 01", telemetry tags (Mars 225M km · 7 mo · -63°C; Moon 384,400 km · 3 days · -130°C).
-- Chapter/rover panels: dark glass bento cards, rotating 3D rover, battery/health/signal gauges.
-- Astro Relic core: spiky glowing particle sphere (Three.js) = the mysterious relic players track.
-- Keep our own story, layout and identity; save credits — small focused steps.
-- DONE: hub camera now looks down (lookAt y=-2.2) so terrain is visible.
-
 ## Dual universe rule
+
 Mars and Moon share ONE engine/mechanics/controls; only visuals, gravity (Mars 0.38g, Moon 0.16g), chapters and Nova lines differ.
