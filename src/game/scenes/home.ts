@@ -1,6 +1,7 @@
 // @ts-nocheck — strict index-access checks are noisy for this array-heavy particle scene.
 import * as THREE from "three";
 import { makeGlowTexture, makeCanvasTexture, fbm, type Scene } from "../utils";
+import { createMoonTexture } from "../solarTextures";
 import { buildNova } from "../models/builders";
 
 const MOUSE_RADIUS = 0.42; // NDC units
@@ -59,7 +60,9 @@ export class HomeScene implements Scene {
   private shootNext = 2.5;
   private shootVel = new THREE.Vector3();
 
-  // mars
+  // moon & mars
+  private moon: THREE.Mesh;
+  private moonGlow: THREE.Sprite;
   private mars: THREE.Mesh;
   private marsGlow: THREE.Sprite;
 
@@ -253,6 +256,36 @@ export class HomeScene implements Scene {
     this.scene.add(this.shoot);
     this.disposables.push(shootTex, this.shoot.geometry, this.shootMat);
 
+    // ---------- Moon (Mystical Glowing Moon Background) ----------
+    const moonTex = createMoonTexture();
+    this.moon = new THREE.Mesh(
+      new THREE.SphereGeometry(1.65, 64, 48),
+      new THREE.MeshStandardMaterial({
+        map: moonTex,
+        roughness: 0.85,
+        metalness: 0.1,
+      }),
+    );
+    this.moon.position.set(-5.0, 2.6, -18);
+    this.moon.rotation.y = 0.6;
+    this.scene.add(this.moon);
+    this.disposables.push(moonTex, this.moon.geometry, this.moon.material as THREE.Material);
+
+    const moonGlowTex = makeGlowTexture("rgba(215,230,255,0.9)", "rgba(100,150,220,0)");
+    this.moonGlow = new THREE.Sprite(
+      new THREE.SpriteMaterial({
+        map: moonGlowTex,
+        transparent: true,
+        opacity: 0.55,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      }),
+    );
+    this.moonGlow.position.copy(this.moon.position);
+    this.moonGlow.scale.set(7.2, 7.2, 1);
+    this.scene.add(this.moonGlow);
+    this.disposables.push(moonGlowTex, this.moonGlow.material);
+
     // ---------- Mars (promise of the universe screen) ----------
     const marsTex = makeCanvasTexture(256, (ctx, s) => {
       const img = ctx.createImageData(s, s);
@@ -442,6 +475,15 @@ export class HomeScene implements Scene {
     }
   }
 
+  private updateMoon(dt: number) {
+    this.moon.rotation.y += dt * 0.035;
+    this.v.copy(this.moon.position).project(this.camera);
+    const d = Math.hypot(this.mouse.x - this.v.x, this.mouse.y - this.v.y);
+    const target = d < 0.22 ? 0.95 : 0.55;
+    const mat = this.moonGlow.material as THREE.SpriteMaterial;
+    mat.opacity += (target - mat.opacity) * Math.min(1, dt * 3);
+  }
+
   private updateMars(dt: number) {
     this.mars.rotation.y += dt * 0.06;
     this.v.copy(this.mars.position).project(this.camera);
@@ -468,6 +510,7 @@ export class HomeScene implements Scene {
     if (this.mouse.active && Math.random() < dt * 26) this.spawnDust(1);
 
     this.updateShooting(dt);
+    this.updateMoon(dt);
     this.updateMars(dt);
 
     // Nova bobbing & waving

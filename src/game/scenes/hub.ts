@@ -796,6 +796,7 @@ export class HubScene implements Scene {
   private hemi: THREE.HemisphereLight;
   private dir: THREE.DirectionalLight;
   private hazeBase = 0.5;
+  private marsBgMesh?: THREE.Mesh;
   private moonBgMesh?: THREE.Mesh;
 
   constructor(renderer: THREE.WebGLRenderer) {
@@ -806,18 +807,37 @@ export class HubScene implements Scene {
     this.scene.background = new THREE.Color(0x0a0508);
     this.scene.fog = new THREE.Fog(0x140a08, 55, 190);
 
-    // ---------- load user reference image as Moon background plane ----------
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.load("/assets/aistudio/images_8ad5ae7c.jpg", (tex) => {
-      tex.colorSpace = THREE.SRGBColorSpace;
-      const bgGeo = new THREE.PlaneGeometry(360, 210);
-      const bgMat = new THREE.MeshBasicMaterial({ map: tex, fog: false });
-      this.moonBgMesh = new THREE.Mesh(bgGeo, bgMat);
-      this.moonBgMesh.position.set(0, 18, -130);
-      this.moonBgMesh.visible = this.universe === "moon";
-      this.scene.add(this.moonBgMesh);
-      this.disposables.push(tex, bgGeo, bgMat);
-    });
+
+    // ---------- load user uploaded image as Mars background plane ----------
+    textureLoader.load(
+      "/assets/aistudio/daniele-colucci-OtXJhYjbKeg-unsplash__1__b9d9b85e.jpg",
+      (tex) => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        const bgGeo = new THREE.PlaneGeometry(380, 220);
+        const bgMat = new THREE.MeshBasicMaterial({ map: tex, fog: false });
+        this.marsBgMesh = new THREE.Mesh(bgGeo, bgMat);
+        this.marsBgMesh.position.set(0, 18, -135);
+        this.marsBgMesh.visible = this.universe === "mars";
+        this.scene.add(this.marsBgMesh);
+        this.disposables.push(tex, bgGeo, bgMat);
+      },
+    );
+
+    // ---------- load new high-res image as Moon background plane ----------
+    textureLoader.load(
+      "/assets/aistudio/High_Resolution_Planet_Earth_view_f__by_Vadim_Sadovski_on__creativemarket_d82d8335.jpg",
+      (tex) => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        const bgGeo = new THREE.PlaneGeometry(360, 210);
+        const bgMat = new THREE.MeshBasicMaterial({ map: tex, fog: false });
+        this.moonBgMesh = new THREE.Mesh(bgGeo, bgMat);
+        this.moonBgMesh.position.set(0, 18, -130);
+        this.moonBgMesh.visible = this.universe === "moon";
+        this.scene.add(this.moonBgMesh);
+        this.disposables.push(tex, bgGeo, bgMat);
+      },
+    );
 
     // ---------- stars ----------
     this.stars = makeStarfield(2400, 700);
@@ -1015,37 +1035,36 @@ export class HubScene implements Scene {
   private applyUniverse(u: Universe) {
     this.universe = u;
     const mars = u === "mars";
-    this.marsTerrain.visible = mars;
-    this.marsRocks.visible = mars;
+    // Hide procedural meshes that clash with high-res background art
+    this.marsTerrain.visible = false;
+    this.marsRocks.visible = false;
     this.moonTerrain.visible = false;
     this.moonRocks.visible = false;
+    this.earthGroup.visible = false;
+    this.haze.visible = false;
 
+    if (this.marsBgMesh) {
+      this.marsBgMesh.visible = mars;
+    }
     if (this.moonBgMesh) {
       this.moonBgMesh.visible = !mars;
     }
-    this.earthGroup.visible = mars;
 
     const bg = this.scene.background as THREE.Color;
     const fog = this.scene.fog as THREE.Fog;
     if (mars) {
       bg.set(0x0a0508);
       fog.color.set(0x140a08);
-      fog.near = 55;
-      fog.far = 190;
+      fog.near = 500;
+      fog.far = 3000;
       this.hemi.color.set(0xff9a66);
       this.hemi.groundColor.set(0x351408);
       this.hemi.intensity = 0.55;
       this.dir.color.set(0xffd0a8);
       this.dir.intensity = 1.25;
       this.dir.position.set(-18, 22, -8);
-      this.haze.visible = true;
-      (this.haze.material as THREE.SpriteMaterial).color.set(0xff8244);
-      this.hazeBase = 0.5;
-      // Position Earth in Martian sky
-      this.earthGroup.position.set(12, 10.5, -65);
-      this.earthGroup.scale.setScalar(0.78);
     } else {
-      // Moon: airless deep pitch-black space using the user's reference image background
+      // Moon: airless deep space using user uploaded high-res Earth view
       bg.set(0x000003);
       fog.color.set(0x000003);
       fog.near = 500;
@@ -1056,7 +1075,6 @@ export class HubScene implements Scene {
       this.dir.color.set(0xf5f8ff);
       this.dir.intensity = 2.0;
       this.dir.position.set(-35, 24, -14);
-      this.haze.visible = false;
     }
   }
 
